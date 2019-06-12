@@ -473,6 +473,11 @@ def handle(bot):
                                 s = f.read()
                                 f.close()
                                 bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                                done = True
+                                try:
+                                    bot.deleteMessage(status_message.message_id)
+                                except:
+                                    pass
                             else:
                                 cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                                 subprocess.Popen(cmd_download, shell=False).wait()
@@ -603,310 +608,311 @@ def handle(bot):
                             f.write(str(chat_id) + ":" + input_text + "\n")
                             f.close()
                 update.effective_messageid = None
-                try:
-                    input_text = update.effective_message['text']
-                    input_text = input_text.split('&')[0]
-                    if "group" in chat_type and "/conv" in input_text:
-                        goon = True
-                        input_text = input_text.replace("/conv", "").replace(" ", "")
-                    else:
-                        if "group" in chat_type:
-                            goon = False
-                        else:
-                            goon = True
+                if done == False:
                     try:
-                        if update.effective_message.reply_to_message.text == "/conv" or "/conv@" + bottag and "group" in chat_type:
-                            input_text = update.effective_message.reply_to_message.text.replace("/conv", "")
-                    except:
-                        pass
-                    blacklist = open("blacklist.txt", "r").read()
-                    if str(chat_id) in blacklist:
-                        goon = False
-                        done = True
-                    if "album" in input_text or "list" in update.effective_message['text'] or "set" in input_text:
-                        goon = False
-                        done = True
-                        if chat_type == "private":
-                            bot.sendMessage(chat_id, "I cannot convert multiple songs at once, sorry...", reply_to_message_id=update.effective_message.message_id)
-                    duration = getduration(input_text)
-                    if chat_type == "channel":
-                        goon = True
-                        done = False
-                    if duration>1000:
-                        goon = False
-                        done = True
-                        f = open("lang/" + botlang + "/toolong", "r")
-                        s = f.read()
-                        f.close()
-                        bot.sendMessage(chat_id,s,disable_web_page_preview=True)
-                    if goon == True and done == False:
-                        if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in update.effective_message["text"] and "://" in update.effective_message["text"] and not input_text.startswith("#"):
-                            status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
+                        input_text = update.effective_message['text']
+                        input_text = input_text.split('&')[0]
+                        if "group" in chat_type and "/conv" in input_text:
+                            goon = True
+                            input_text = input_text.replace("/conv", "").replace(" ", "")
                         else:
-                            try:
-                                if input_text.startswith("/settag") or "youtu" in input_text \
-                                or "mixcloud" in input_text \
-                                or "soundcloud" in input_text \
-                                or "spotify" in input_text:
-                                    bot.deleteMessage(chat_id, update.effective_message.message_id)
-                            except:
-                                pass
+                            if "group" in chat_type:
+                                goon = False
+                            else:
+                                goon = True
                         try:
-                            input_text = input_text.replace("\n", " ")
-                            input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url") # pylint: disable=W1401
+                            if update.effective_message.reply_to_message.text == "/conv" or "/conv@" + bottag and "group" in chat_type:
+                                input_text = update.effective_message.reply_to_message.text.replace("/conv", "")
                         except:
                             pass
-                        f = open("tags.txt","r")
-                        s = f.read().split("\n")
-                        f.close()
-                        username = ""
-                        for line in s:
-                            chanid = line.split(":")[0]
-                            if chanid == str(chat_id):
-                                username = line.split(":")[1]
-                                username = "\n🆔 @" + username
-                        if "mixcloud" in input_text:
-                            cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
-                            subprocess.Popen(cmd, shell=False).wait()
-                            r = requests.get(input_text)
-                            c = r.content
-                            title = c.split('<title>')[1].split('</title>')[0]
-                            stitle = html.unescape(title.split(' by ')[0])
-                            artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
-                            title = stitle
-                            filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                            cover = "https://thumbnailer.mixcloud.com/unsafe/500x500/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
-                            os.system("wget -O audio.jpg \"" + cover + "\"")
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(update.effective_messageid, "Converting...")
-                            subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                            audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = (audio.info.length * 0.33) + 60
-                            if audio.info.length > l2:
-                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            else:
-                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(update.effective_messageid, "Sending...")
-                            f = open("audio.jpg")
-                            bot.sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                            f.close()
-                            if os.path.exists("audio.jpg"):
-                                os.system("convert audio.jpg -resize 90x90 thumb.jpg")
-                            else:
-                                os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                            sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                            f = open("output.ogg", "r")
-                            bot.sendVoice(chat_id,f,username)
-                            f.close()
+                        blacklist = open("blacklist.txt", "r").read()
+                        if str(chat_id) in blacklist:
+                            goon = False
+                            done = True
+                        if "album" in input_text or "list" in update.effective_message['text'] or "set" in input_text:
+                            goon = False
+                            done = True
                             if chat_type == "private":
-                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                        if "spotify" in input_text:
+                                bot.sendMessage(chat_id, "I cannot convert multiple songs at once, sorry...", reply_to_message_id=update.effective_message.message_id)
+                        duration = getduration(input_text)
+                        if chat_type == "channel":
+                            goon = True
+                            done = False
+                        if duration>1000:
+                            goon = False
+                            done = True
+                            f = open("lang/" + botlang + "/toolong", "r")
+                            s = f.read()
+                            f.close()
+                            bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                        if goon == True and done == False:
+                            if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in update.effective_message["text"] and "://" in update.effective_message["text"] and not input_text.startswith("#"):
+                                status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
+                            else:
+                                try:
+                                    if input_text.startswith("/settag") or "youtu" in input_text \
+                                    or "mixcloud" in input_text \
+                                    or "soundcloud" in input_text \
+                                    or "spotify" in input_text:
+                                        bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                except:
+                                    pass
                             try:
-                                trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
+                                input_text = input_text.replace("\n", " ")
+                                input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url") # pylint: disable=W1401
                             except:
-                                trackid = input_text.replace("https://open.spotify.com/track/", "")
-                            print(trackid)
-                            with urllib.request.urlopen(input_text) as response:
-                                r = response.read().decode()
-                            title = r.split('<title>')[1].split('</title>')[0]
-                            stitle = html.unescape(title.split(',')[0])
-                            artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0].split(',')[0])
-                            if " (feat." in stitle:
-                                stitle = stitle.split(' (')[0]
-                            title = stitle
-                            data = r.split('Spotify.Entity = ')[1].split(';')[0]
-                            cover = data.split('"url":"')[1].split("\"")[0].replace("\\", "")
-                            year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
-                            albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
-                            os.system("wget -O audio.jpg \"" + cover + "\"")
-                            query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
-                            print(query)
-                            cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
-                            subprocess.Popen(cmd, shell=False).wait()
-                            filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                            subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "audio.mp3", filename], shell=False).wait()
-                            audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = (audio.info.length * 0.33) + 60
-                            if audio.info.length > l2:
-                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            else:
-                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                            f = open("audio.jpg")
-                            sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
+                                pass
+                            f = open("tags.txt","r")
+                            s = f.read().split("\n")
                             f.close()
-                            if os.path.exists("audio.jpg"):
-                                os.system("convert audio.jpg -resize 90x90 thumb.jpg")
-                            else:
-                                os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                            sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                            sendVoice(chat_id,"output.ogg",username)
-                            if chat_type == "private":
-                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                        if "soundcloud" in input_text:
-                            track = client.get('/resolve', url=input_text)
-                            thist = track
-                            filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_").replace("/", "-") + ".mp3"
-                            stream_url = client.get(thist.stream_url, allow_redirects=False)
-                            artist = None
-                            title = None
-                            try:
-                                artist = thist.title.split(" - ")[0]
-                                title = thist.title.split(" - ")[1]
+                            username = ""
+                            for line in s:
+                                chanid = line.split(":")[0]
+                                if chanid == str(chat_id):
+                                    username = line.split(":")[1]
+                                    username = "\n🆔 @" + username
+                            if "mixcloud" in input_text:
+                                cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
+                                subprocess.Popen(cmd, shell=False).wait()
+                                r = requests.get(input_text)
+                                c = r.content
+                                title = c.split('<title>')[1].split('</title>')[0]
+                                stitle = html.unescape(title.split(' by ')[0])
+                                artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
+                                title = stitle
+                                filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
+                                cover = "https://thumbnailer.mixcloud.com/unsafe/500x500/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
+                                os.system("wget -O audio.jpg \"" + cover + "\"")
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(update.effective_messageid, "Converting...")
+                                subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                audio = MP3(filename)
+                                length = audio.info.length * 0.33
+                                l2 = (audio.info.length * 0.33) + 60
+                                if audio.info.length > l2:
+                                    subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                else:
+                                    subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(update.effective_messageid, "Sending...")
+                                f = open("audio.jpg")
+                                bot.sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
+                                f.close()
+                                if os.path.exists("audio.jpg"):
+                                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                else:
+                                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                sendAudioChan(chat_id,filename,artist,title,username,thumb)
+                                f = open("output.ogg", "r")
+                                bot.sendVoice(chat_id,f,username)
+                                f.close()
+                                if chat_type == "private":
+                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                            if "spotify" in input_text:
                                 try:
-                                    artist = artist.split(" [")[0]
-                                    title = title.split(" [")[0]
+                                    trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
                                 except:
-                                    pass
-                                try:
-                                    os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                                    os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                                except:
-                                    pass
-                                if not os.path.exists("raw_audio.jpg"):
-                                    os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                                    trackid = input_text.replace("https://open.spotify.com/track/", "")
+                                print(trackid)
+                                with urllib.request.urlopen(input_text) as response:
+                                    r = response.read().decode()
+                                title = r.split('<title>')[1].split('</title>')[0]
+                                stitle = html.unescape(title.split(',')[0])
+                                artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0].split(',')[0])
+                                if " (feat." in stitle:
+                                    stitle = stitle.split(' (')[0]
+                                title = stitle
+                                data = r.split('Spotify.Entity = ')[1].split(';')[0]
+                                cover = data.split('"url":"')[1].split("\"")[0].replace("\\", "")
+                                year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
+                                albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
+                                os.system("wget -O audio.jpg \"" + cover + "\"")
+                                query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
+                                print(query)
+                                cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                                subprocess.Popen(cmd, shell=False).wait()
+                                filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                 if not chat_type == "channel" and not "group" in chat_type:
                                     bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                            except:
-                                artist = thist.user['username']
-                                title = thist.title
+                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "audio.mp3", filename], shell=False).wait()
+                                audio = MP3(filename)
+                                length = audio.info.length * 0.33
+                                l2 = (audio.info.length * 0.33) + 60
+                                if audio.info.length > l2:
+                                    subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                else:
+                                    subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
+                                f = open("audio.jpg")
+                                sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
+                                f.close()
+                                if os.path.exists("audio.jpg"):
+                                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                else:
+                                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                sendAudioChan(chat_id,filename,artist,title,username,thumb)
+                                sendVoice(chat_id,"output.ogg",username)
+                                if chat_type == "private":
+                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                            if "soundcloud" in input_text:
+                                track = client.get('/resolve', url=input_text)
+                                thist = track
+                                filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_").replace("/", "-") + ".mp3"
+                                stream_url = client.get(thist.stream_url, allow_redirects=False)
+                                artist = None
+                                title = None
                                 try:
-                                    artist = artist.split(" [")[0]
-                                    title = title.split(" [")[0]
+                                    artist = thist.title.split(" - ")[0]
+                                    title = thist.title.split(" - ")[1]
+                                    try:
+                                        artist = artist.split(" [")[0]
+                                        title = title.split(" [")[0]
+                                    except:
+                                        pass
+                                    try:
+                                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                                    except:
+                                        pass
+                                    if not os.path.exists("raw_audio.jpg"):
+                                        os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                                    if not chat_type == "channel" and not "group" in chat_type:
+                                        bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
+                                    subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                except:
+                                    artist = thist.user['username']
+                                    title = thist.title
+                                    try:
+                                        artist = artist.split(" [")[0]
+                                        title = title.split(" [")[0]
+                                    except:
+                                        pass
+                                    try:
+                                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                                    except:
+                                        pass
+                                    if not os.path.exists("raw_audio.jpg"):
+                                        os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                                    if not chat_type == "channel" and not "group" in chat_type:
+                                        bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
+                                    try:
+                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                    except:
+                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                audio = MP3(filename)
+                                length = audio.info.length * 0.33
+                                l2 = (audio.info.length * 0.33) + 60
+                                if audio.info.length > l2:
+                                    subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                else:
+                                    subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
+                                sendPhoto(chat_id,"raw_audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
+                                if os.path.exists("audio.jpg"):
+                                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                else:
+                                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                sendAudioChan(chat_id,filename,artist,title,username,thumb)
+                                f = open("output.ogg", "rb")
+                                bot.sendVoice(chat_id,f,"",username)
+                                f.close()
+                                if chat_type == "private":
+                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                            if "youtu" in input_text:
+                                input_text = input_text.replace("music.", "")
+                                cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
+                                subprocess.Popen(cmd, shell=False).wait()
+                                tag = eyed3.load("audio.mp3")
+                                try:
+                                    title = tag.tag.title.split(" - ")[1].replace("\"", "")
+                                    artist = tag.tag.title.split(" - ")[0]
+                                    title = title.replace(artist + " - ","")
+                                    try:
+                                        if not "Remix" in title and not "Mix" in title:
+                                            title = title.split(" (")[0].replace("\"", "")
+                                    except:
+                                        pass
+                                    try:
+                                        title = title.split(" [")[0].replace("\"", "")
+                                    except:
+                                        pass
+                                except:
+                                    title = tag.tag.title.replace("\"", "")
+                                    artist = tag.tag.artist
+                                try:
+                                    artist = artist.replace(" - Topic", "")
                                 except:
                                     pass
                                 try:
-                                    os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                                    os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                                    subprocess.Popen(["sacad", artist, title, "500", "audio.jpg"], shell=False).wait()
                                 except:
                                     pass
-                                if not os.path.exists("raw_audio.jpg"):
-                                    os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
                                 if not chat_type == "channel" and not "group" in chat_type:
                                     bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                try:
-                                    subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                                except:
-                                    subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                            audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = (audio.info.length * 0.33) + 60
-                            if audio.info.length > l2:
-                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            else:
-                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                            sendPhoto(chat_id,"raw_audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                            if os.path.exists("audio.jpg"):
-                                os.system("convert audio.jpg -resize 90x90 thumb.jpg")
-                            else:
-                                os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                            sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                            f = open("output.ogg", "rb")
-                            bot.sendVoice(chat_id,f,"",username)
-                            f.close()
-                            if chat_type == "private":
-                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                        if "youtu" in input_text:
-                            input_text = input_text.replace("music.", "")
-                            cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
-                            subprocess.Popen(cmd, shell=False).wait()
-                            tag = eyed3.load("audio.mp3")
+                                filename = filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
+                                subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                audio = MP3(filename)
+                                length = audio.info.length * 0.33
+                                l2 = (audio.info.length * 0.33) + 60
+                                if audio.info.length > l2:
+                                    subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                else:
+                                    subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
+                                f = open("audio.jpg")
+                                sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
+                                f.close()
+                                if os.path.exists("audio.jpg"):
+                                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                else:
+                                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                sendAudioChan(chat_id,filename,artist,title,username,thumb)
+                                sendVoice(chat_id,"output.ogg",username)
+                                f.close()
+                                if chat_type == "private":
+                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                             try:
-                                title = tag.tag.title.split(" - ")[1].replace("\"", "")
-                                artist = tag.tag.title.split(" - ")[0]
-                                title = title.replace(artist + " - ","")
-                                try:
-                                    if not "Remix" in title and not "Mix" in title:
-                                        title = title.split(" (")[0].replace("\"", "")
-                                except:
-                                    pass
-                                try:
-                                    title = title.split(" [")[0].replace("\"", "")
-                                except:
-                                    pass
-                            except:
-                                title = tag.tag.title.replace("\"", "")
-                                artist = tag.tag.artist
-                            try:
-                                artist = artist.replace(" - Topic", "")
+                                bot.deleteMessage(chat_id, status_message.message_id)
                             except:
                                 pass
+                    except Exception as e:
+                        if chat_type == "private":
+                            f = open("lang/" + botlang + "/error", "r")
+                            s = f.read()
+                            f.close()
+                            exc_type, exc_obj, tb = sys.exc_info()
+                            print(exc_type, exc_obj, tb)
+                            f = tb.tb_frame
+                            lineno = tb.tb_lineno
+                            error = str("line " + str(lineno) + ": " + str(e))
+                            url = update.effective_message["text"]
+                            chatid = str(chat_id)
+                            release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                            s = s.replace("%%crashlog%%", error)
+                            s = s.replace("%%message%%", url)
+                            s = s.replace("%%chatid%%", chatid)
+                            s = s.replace("%%release%%", release)
+                            s = s.replace("%%bottag%%", bottag)
                             try:
-                                subprocess.Popen(["sacad", artist, title, "500", "audio.jpg"], shell=False).wait()
+                                bot.deleteMessage(status_message.message_id)
+                                bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+                            except:
+                                bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+                            try:
+                                f = open("chatids.txt")
+                                c = f.readlines()
+                                f.close()
+                                master = ""
+                                for x in c:
+                                    if BOTMASTER in x:
+                                        master = x.split(":")[0]
+                                bot.sendMessage(master, s, parse_mode="HTML")
                             except:
                                 pass
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                            filename = filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                            subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                            audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = (audio.info.length * 0.33) + 60
-                            if audio.info.length > l2:
-                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            else:
-                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                            f = open("audio.jpg")
-                            sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                            f.close()
-                            if os.path.exists("audio.jpg"):
-                                os.system("convert audio.jpg -resize 90x90 thumb.jpg")
-                            else:
-                                os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                            sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                            sendVoice(chat_id,"output.ogg",username)
-                            f.close()
-                            if chat_type == "private":
-                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                        try:
-                            bot.deleteMessage(chat_id, status_message.message_id)
-                        except:
-                            pass
-                except Exception as e:
-                    if chat_type == "private":
-                        f = open("lang/" + botlang + "/error", "r")
-                        s = f.read()
-                        f.close()
-                        exc_type, exc_obj, tb = sys.exc_info()
-                        print(exc_type, exc_obj, tb)
-                        f = tb.tb_frame
-                        lineno = tb.tb_lineno
-                        error = str("line " + str(lineno) + ": " + str(e))
-                        url = update.effective_message["text"]
-                        chatid = str(chat_id)
-                        release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                        s = s.replace("%%crashlog%%", error)
-                        s = s.replace("%%message%%", url)
-                        s = s.replace("%%chatid%%", chatid)
-                        s = s.replace("%%release%%", release)
-                        s = s.replace("%%bottag%%", bottag)
-                        try:
-                            bot.deleteMessage(status_message.message_id)
-                            bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
-                        except:
-                            bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
-                        try:
-                            f = open("chatids.txt")
-                            c = f.readlines()
-                            f.close()
-                            master = ""
-                            for x in c:
-                                if BOTMASTER in x:
-                                    master = x.split(":")[0]
-                            bot.sendMessage(master, s, parse_mode="HTML")
-                        except:
-                            pass
                 else:
                     f = open("counters-disabled.txt", "r")
                     s = f.read()
