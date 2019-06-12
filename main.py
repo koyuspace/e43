@@ -72,15 +72,18 @@ def isenabled(module):
     return modenabled
 
 def getduration(dlcmd):
-    args = dlcmd.split(" ")
-    args2 = ["jq", ".duration"]
-    process_dl = subprocess.Popen(args, stdout=subprocess.PIPE, shell=False)
-    process_jq = subprocess.Popen(args2, stdin=process_dl.stdout, stdout=subprocess.PIPE, shell=False)
-    process_dl.stdout.close()
-    try:
-        return int(str(process_jq.communicate()[0]).replace("b'", "").replace("\\n'", ""))
-    except:
-        return None
+    if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
+        args = dlcmd.split(" ")
+        args2 = ["jq", ".duration"]
+        process_dl = subprocess.Popen(args, stdout=subprocess.PIPE, shell=False)
+        process_jq = subprocess.Popen(args2, stdin=process_dl.stdout, stdout=subprocess.PIPE, shell=False)
+        process_dl.stdout.close()
+        try:
+            return int(str(process_jq.communicate()[0]).replace("b'", "").replace("\\n'", ""))
+        except:
+            return None
+    else:
+        return 0
 
 def handle(bot):
     global update_id
