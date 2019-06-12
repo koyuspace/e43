@@ -463,8 +463,6 @@ def handle(bot):
                 if update.effective_message['text'].startswith("/vid http://") or update.effective_message['text'].startswith("/vid https://"):
                     if isenabled("videos"):
                         try:
-                            done = True
-                            status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                             input_text = update.effective_message['text'].split("/vid ")[1]
                             input_text = input_text.split('&')[0]
                             duration = getduration(input_text)
@@ -473,12 +471,9 @@ def handle(bot):
                                 s = f.read()
                                 f.close()
                                 bot.sendMessage(chat_id,s,disable_web_page_preview=True)
-                                try:
-                                    bot.deleteMessage(chat_id, status_message.effective_message.message_id)
-                                except:
-                                    pass
                                 done = True
                             else:
+                                status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                                 cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                                 subprocess.Popen(cmd_download, shell=False).wait()
                                 cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
