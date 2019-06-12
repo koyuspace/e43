@@ -487,7 +487,7 @@ def handle(bot):
                                 sendVideoNote(chat_id, "vm.mp4")
                                 sendVideo(chat_id, "out.mp4")
                                 try:
-                                    bot.deleteMessage(chat_id, status_message.effective_message.message_id)
+                                    bot.deleteMessage(chat_id, status_message.message_id)
                                 except:
                                     pass
                                 if chat_type == "private":
@@ -871,7 +871,7 @@ def handle(bot):
                                 if chat_type == "private":
                                     bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                             try:
-                                bot.deleteMessage(chat_id, status_message.effective_message.message_id)
+                                bot.deleteMessage(chat_id, status_message.message_id)
                             except:
                                 pass
                     except Exception as e:
@@ -893,7 +893,7 @@ def handle(bot):
                             s = s.replace("%%release%%", release)
                             s = s.replace("%%bottag%%", bottag)
                             try:
-                                bot.deleteMessage(chat_id, status_message.effective_message.message_id)
+                                bot.deleteMessage(chat_id, status_message.message_id)
                                 bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
                             except:
                                 bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
@@ -1106,7 +1106,7 @@ def handle(bot):
                                     except:
                                         pass
                                     try:
-                                        bot.deleteMessage(chat_id, status_message.effective_message.message_id)
+                                        bot.deleteMessage(chat_id, status_message.message_id)
                                     except:
                                         pass
                             except:
