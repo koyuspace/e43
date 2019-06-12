@@ -72,6 +72,7 @@ def isenabled(module):
     return modenabled
 
 def getduration(dlcmd):
+    dlcmd = "youtube-dl -j " + dlcmd
     if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
         args = dlcmd.split(" ")
         args2 = ["jq", ".duration"]
@@ -466,7 +467,7 @@ def handle(bot):
                             status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                             input_text = update.effective_message['text'].split("/vid ")[1]
                             input_text = input_text.split('&')[0]
-                            duration = getduration("youtube-dl -f mp4 -j " + input_text)
+                            duration = getduration(input_text)
                             if duration>1000:
                                 f = open("lang/" + botlang + "/toolong", "r")
                                 s = f.read()
@@ -627,7 +628,7 @@ def handle(bot):
                         done = True
                         if chat_type == "private":
                             bot.sendMessage(chat_id, "I cannot convert multiple songs at once, sorry...", reply_to_message_id=update.effective_message.message_id)
-                    duration = getduration("youtube-dl -x --audio-format mp3 " + input_text)
+                    duration = getduration(input_text)
                     if chat_type == "channel":
                         goon = True
                         done = False
