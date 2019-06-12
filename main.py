@@ -472,7 +472,7 @@ def handle(bot):
                                 f = open("lang/" + botlang + "/toolong", "r")
                                 s = f.read()
                                 f.close()
-                                bot.sendMessage(chat_id, s)
+                                bot.sendMessage(chat_id,s,disable_web_page_preview=True)
                             else:
                                 cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                                 subprocess.Popen(cmd_download, shell=False).wait()
@@ -638,7 +638,7 @@ def handle(bot):
                         f = open("lang/" + botlang + "/toolong", "r")
                         s = f.read()
                         f.close()
-                        bot.sendMessage(chat_id, s)
+                        bot.sendMessage(chat_id,s,disable_web_page_preview=True)
                     if goon == True and done == False:
                         if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in update.effective_message["text"] and "://" in update.effective_message["text"] and not input_text.startswith("#"):
                             status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
