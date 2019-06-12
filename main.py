@@ -71,6 +71,17 @@ def isenabled(module):
             modenabled = True
     return modenabled
 
+def getduration(dlcmd):
+    args = dlcmd.split(" ")
+    args2 = ["jq", ".duration"]
+    process_dl = subprocess.Popen(args, stdout=subprocess.PIPE, shell=False)
+    process_jq = subprocess.Popen(args2, stdin=process_dl.stdout, stdout=subprocess.PIPE, shell=False)
+    process_dl.stdout.close()
+    try:
+        return int(str(process_jq.communicate()[0]).replace("b'", "").replace("\\n'", ""))
+    except:
+        return None
+
 def handle(bot):
     global update_id
     for update in bot.get_updates(offset=update_id, timeout=10):
@@ -414,7 +425,7 @@ def handle(bot):
                             if isAdmin == True:
                                 proceed = True
                             else:
-                                message_status = bot.sendMessage(chat_id, "You don't have permission to do that.", reply_to_message_id=update.effective_message.message_id)
+                                bot.sendMessage(chat_id, "You don't have permission to do that.", reply_to_message_id=update.effective_message.message_id)
                         else:
                             proceed = True
                         if proceed == True:
@@ -452,24 +463,31 @@ def handle(bot):
                             status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                             input_text = update.effective_message['text'].split("/vid ")[1]
                             input_text = input_text.split('&')[0]
-                            cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
-                            subprocess.Popen(cmd_download, shell=False).wait()
-                            cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                            subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
-                            filename = "out.mp4"
-                            subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
-                            if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                            sendVideoNote(chat_id, "vm.mp4")
-                            sendVideo(chat_id, "out.mp4")
-                            try:
-                                bot.deleteMessage(status_message.message_id)
-                            except:
-                                pass
-                            if chat_type == "private":
-                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                            duration = getduration("youtube-dl -f mp4 -j " + input_text)
+                            if duration>1000:
+                                f = open("lang/" + botlang + "/toolong", "r")
+                                s = f.read()
+                                f.close()
+                                bot.sendMessage(chat_id, s)
+                            else:
+                                cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
+                                subprocess.Popen(cmd_download, shell=False).wait()
+                                cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
+                                subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
+                                filename = "out.mp4"
+                                subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
+                                if not chat_type == "channel" and not "group" in chat_type:
+                                    bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
+                                sendVideoNote(chat_id, "vm.mp4")
+                                sendVideo(chat_id, "out.mp4")
+                                try:
+                                    bot.deleteMessage(status_message.message_id)
+                                except:
+                                    pass
+                                if chat_type == "private":
+                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                         except Exception as e:
                             if chat_type == "private":
                                 f = open("lang/" + botlang + "/error", "r")
@@ -606,9 +624,17 @@ def handle(bot):
                         done = True
                         if chat_type == "private":
                             bot.sendMessage(chat_id, "I cannot convert multiple songs at once, sorry...", reply_to_message_id=update.effective_message.message_id)
+                    duration = getduration("youtube-dl -x --audio-format mp3 " + input_text)
                     if chat_type == "channel":
                         goon = True
                         done = False
+                    if duration>1000:
+                        goon = False
+                        done = True
+                        f = open("lang/" + botlang + "/toolong", "r")
+                        s = f.read()
+                        f.close()
+                        bot.sendMessage(chat_id, s)
                     if goon == True and done == False:
                         if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in update.effective_message["text"] and "://" in update.effective_message["text"] and not input_text.startswith("#"):
                             status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
