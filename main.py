@@ -473,11 +473,11 @@ def handle(bot):
                                 s = f.read()
                                 f.close()
                                 bot.sendMessage(chat_id,s,disable_web_page_preview=True)
-                                done = True
                                 try:
                                     bot.deleteMessage(chat_id, status_message.effective_message.message_id)
                                 except:
                                     pass
+                                done = True
                             else:
                                 cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                                 subprocess.Popen(cmd_download, shell=False).wait()
