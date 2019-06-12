@@ -486,10 +486,6 @@ def handle(bot):
                                     bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
                                 sendVideoNote(chat_id, "vm.mp4")
                                 sendVideo(chat_id, "out.mp4")
-                                try:
-                                    bot.deleteMessage(chat_id, status_message.message_id)
-                                except:
-                                    pass
                                 if chat_type == "private":
                                     bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                         except Exception as e:
@@ -870,10 +866,6 @@ def handle(bot):
                                 f.close()
                                 if chat_type == "private":
                                     bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                            try:
-                                bot.deleteMessage(chat_id, status_message.message_id)
-                            except:
-                                pass
                     except Exception as e:
                         if chat_type == "private":
                             f = open("lang/" + botlang + "/error", "r")
@@ -893,7 +885,6 @@ def handle(bot):
                             s = s.replace("%%release%%", release)
                             s = s.replace("%%bottag%%", bottag)
                             try:
-                                bot.deleteMessage(chat_id, status_message.message_id)
                                 bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
                             except:
                                 bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
@@ -1105,10 +1096,6 @@ def handle(bot):
                                             bot.sendMessage(chat_id, status_message['text'], reply_to_message_id=update.effective_message.message_id)
                                     except:
                                         pass
-                                    try:
-                                        bot.deleteMessage(chat_id, status_message.message_id)
-                                    except:
-                                        pass
                             except:
                                 pass
                     if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled("extras"):
@@ -1255,6 +1242,10 @@ def handle(bot):
                                     f.write(x)
                             f.close()
                             bot.sendMessage(chat_id, "Success: Counters enabled!", reply_to_message_id=update.effective_message.message_id)
+            try:
+                bot.deleteMessage(chat_id, status_message.message_id)
+            except:
+                pass
 
 def sendAudio(chat_id,file_name,performer,title,thumb):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
