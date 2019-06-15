@@ -724,8 +724,8 @@ def handle(bot):
                                 with urllib.request.urlopen(input_text) as response:
                                     r = response.read().decode()
                                 title = r.split('<title>')[1].split('</title>')[0]
-                                stitle = html.unescape(title.split(',')[0])
-                                artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0].split(',')[0])
+                                stitle = html.unescape(title)
+                                artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0])
                                 if " (feat." in stitle:
                                     stitle = stitle.split(' (')[0]
                                 title = stitle
@@ -734,7 +734,7 @@ def handle(bot):
                                 year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                                 albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                                 os.system("wget -O audio.jpg \"" + cover + "\"")
-                                query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
+                                query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+") + "+official+audio"
                                 print(query)
                                 cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                                 subprocess.Popen(cmd, shell=False).wait()
