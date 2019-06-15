@@ -923,348 +923,351 @@ def handle(bot):
                                 bot.sendMessage(master, s, parse_mode="HTML")
                             except:
                                 pass
-            f = open("counters-disabled.txt", "r")
-            s = f.read()
-            f.close()
-            if not chat_type == "channel" and not chat_type == "private" and isenabled("counters") and not str(chat_id) in s:
-                if "😂" in update.effective_message['text']:
-                    count = len(update.effective_message['text'].split("😂")) - 1
-                    f = open("counters/joy.txt", "r")
-                    s = f.read()
-                    f.close()
-                    if s == "":
-                        s = "0"
-                    sum = int(count) + int(s)
-                    f = open("counters/joy.txt", "w")
-                    f.write(str(sum))
-                    f.close()
-                    if sum % rnumber == 0:
-                        bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
-                if "bro" in update.effective_message['text']:
-                    count = len(update.effective_message['text'].split("bro")) - 1
-                    f = open("counters/bro.txt", "r")
-                    s = f.read()
-                    f.close()
-                    if s == "":
-                        s = "0"
-                    sum = int(count) + int(s)
-                    f = open("counters/bro.txt", "w")
-                    f.write(str(sum))
-                    f.close()
-                    if sum % rnumber == 0:
-                        bot.sendMessage(chat_id, "bro level is now: " + str(sum))
-                if "Hi" in update.effective_message['text']:
-                    count = len(update.effective_message['text'].split("Hi")) - 1
-                    f = open("counters/hi.txt", "r")
-                    s = f.read()
-                    f.close()
-                    if s == "":
-                        s = "0"
-                    sum = int(count) + int(s)
-                    f = open("counters/hi.txt", "w")
-                    f.write(str(sum))
-                    f.close()
-                    if sum % rnumber == 0:
-                        bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
-                if "lol" in update.effective_message['text']:
-                    count = len(update.effective_message['text'].split("lol")) - 1
-                    f = open("counters/lol.txt", "r")
-                    s = f.read()
-                    f.close()
-                    if s == "":
-                        s = "0"
-                    sum = int(count) + int(s)
-                    f = open("counters/lol.txt", "w")
-                    f.write(str(sum))
-                    f.close()
-                    if sum % rnumber == 0:
-                        bot.sendMessage(chat_id, "lol level is now: " + str(sum))
-                if "pp" in update.effective_message['text']:
-                    count = len(update.effective_message['text'].split("pp")) - 1
-                    f = open("counters/pp.txt", "r")
-                    s = f.read()
-                    f.close()
-                    if s == "":
-                        s = "0"
-                    sum = int(count) + int(s)
-                    f = open("counters/pp.txt", "w")
-                    f.write(str(sum))
-                    f.close()
-                    if sum % rnumber == 0:
-                        bot.sendMessage(chat_id, "pp level is now: " + str(sum))
-            if update.effective_message['text'].startswith("/ping") and isenabled("ping"):
-                ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
-                bot.sendMessage(chat_id, "Pong! (" + ping + " ms)", reply_to_message_id=update.effective_message.message_id)
-            if update.effective_message['text'].startswith("/start") and chat_type == "private":
-                start()
-            if update.effective_message['text'].startswith("/addextra") and isenabled("extras"):
-                try:
-                    extraname = update.effective_message['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
-                    if chat_type == "private":
-                        proceed = True
-                        try:
-                            f = open("extras/" + str(chat_id) + ".txt", "r")
-                            s = f.read().split('\n')
-                            f.close()
-                            for x in s:
-                                mid = x.split(':')[0]
-                                ename = x.split(':')[1]
-                                cid = x.split(':')[2]
-                                if ename == extraname:
-                                    proceed = False
-                        except:
-                            pass
-                        if proceed == True:
-                            f = open("extras/" + str(chat_id) + ".txt", "a+")
-                            print(update.effective_message["reply_to_message"].message_id)
-                            f.write(str(update.effective_message.reply_to_message.message_id) + ":" + extraname + ":" + str(chat_id) + "\n")
-                            f.close()
-                            f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
-                            f.write(extraname + "\r\n")
-                            f.close()
-                            bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=update.effective_message.message_id)
-                        else:
-                            bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=update.effective_message.message_id)
-                    else:
-                        admins = bot.getChatAdministrators(chat_id)
-                        isAdmin = False
-                        for user in admins:
+            try:
+                f = open("counters-disabled.txt", "r")
+                s = f.read()
+                f.close()
+                if not chat_type == "channel" and not chat_type == "private" and isenabled("counters") and not str(chat_id) in s:
+                    if "😂" in update.effective_message['text']:
+                        count = len(update.effective_message['text'].split("😂")) - 1
+                        f = open("counters/joy.txt", "r")
+                        s = f.read()
+                        f.close()
+                        if s == "":
+                            s = "0"
+                        sum = int(count) + int(s)
+                        f = open("counters/joy.txt", "w")
+                        f.write(str(sum))
+                        f.close()
+                        if sum % rnumber == 0:
+                            bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
+                    if "bro" in update.effective_message['text']:
+                        count = len(update.effective_message['text'].split("bro")) - 1
+                        f = open("counters/bro.txt", "r")
+                        s = f.read()
+                        f.close()
+                        if s == "":
+                            s = "0"
+                        sum = int(count) + int(s)
+                        f = open("counters/bro.txt", "w")
+                        f.write(str(sum))
+                        f.close()
+                        if sum % rnumber == 0:
+                            bot.sendMessage(chat_id, "bro level is now: " + str(sum))
+                    if "Hi" in update.effective_message['text']:
+                        count = len(update.effective_message['text'].split("Hi")) - 1
+                        f = open("counters/hi.txt", "r")
+                        s = f.read()
+                        f.close()
+                        if s == "":
+                            s = "0"
+                        sum = int(count) + int(s)
+                        f = open("counters/hi.txt", "w")
+                        f.write(str(sum))
+                        f.close()
+                        if sum % rnumber == 0:
+                            bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
+                    if "lol" in update.effective_message['text']:
+                        count = len(update.effective_message['text'].split("lol")) - 1
+                        f = open("counters/lol.txt", "r")
+                        s = f.read()
+                        f.close()
+                        if s == "":
+                            s = "0"
+                        sum = int(count) + int(s)
+                        f = open("counters/lol.txt", "w")
+                        f.write(str(sum))
+                        f.close()
+                        if sum % rnumber == 0:
+                            bot.sendMessage(chat_id, "lol level is now: " + str(sum))
+                    if "pp" in update.effective_message['text']:
+                        count = len(update.effective_message['text'].split("pp")) - 1
+                        f = open("counters/pp.txt", "r")
+                        s = f.read()
+                        f.close()
+                        if s == "":
+                            s = "0"
+                        sum = int(count) + int(s)
+                        f = open("counters/pp.txt", "w")
+                        f.write(str(sum))
+                        f.close()
+                        if sum % rnumber == 0:
+                            bot.sendMessage(chat_id, "pp level is now: " + str(sum))
+                if update.effective_message['text'].startswith("/ping") and isenabled("ping"):
+                    ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
+                    bot.sendMessage(chat_id, "Pong! (" + ping + " ms)", reply_to_message_id=update.effective_message.message_id)
+                if update.effective_message['text'].startswith("/start") and chat_type == "private":
+                    start()
+                if update.effective_message['text'].startswith("/addextra") and isenabled("extras"):
+                    try:
+                        extraname = update.effective_message['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
+                        if chat_type == "private":
+                            proceed = True
                             try:
-                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
-                                    isAdmin = True
+                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                s = f.read().split('\n')
+                                f.close()
+                                for x in s:
+                                    mid = x.split(':')[0]
+                                    ename = x.split(':')[1]
+                                    cid = x.split(':')[2]
+                                    if ename == extraname:
+                                        proceed = False
                             except:
                                 pass
-                        if update.effective_message.from_user.username == BOTMASTER:
-                            isAdmin = True
-                        if isAdmin == True:
-                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                                extraname = update.effective_message['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
-                                proceed = True
+                            if proceed == True:
+                                f = open("extras/" + str(chat_id) + ".txt", "a+")
+                                print(update.effective_message["reply_to_message"].message_id)
+                                f.write(str(update.effective_message.reply_to_message.message_id) + ":" + extraname + ":" + str(chat_id) + "\n")
+                                f.close()
+                                f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
+                                f.write(extraname + "\r\n")
+                                f.close()
+                                bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=update.effective_message.message_id)
+                            else:
+                                bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=update.effective_message.message_id)
+                        else:
+                            admins = bot.getChatAdministrators(chat_id)
+                            isAdmin = False
+                            for user in admins:
                                 try:
-                                    f = open("extras/" + str(chat_id) + ".txt", "r")
-                                    s = f.read().split('\n')
-                                    f.close()
-                                    for x in s:
-                                        mid = x.split(':')[0]
-                                        ename = x.split(':')[1]
-                                        cid = x.split(':')[2]
-                                        if ename == extraname:
-                                            proceed = False
+                                    if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                        isAdmin = True
                                 except:
                                     pass
-                                if proceed == True:
-                                    f = open("extras/" + str(chat_id) + ".txt", "a+")
-                                    f.write(str(telepot.message_identifier(update.effective_message['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
-                                    f.close()
-                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
-                                    f.write(extraname + "\r\n")
-                                    f.close()
-                                    bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=update.effective_message.message_id)
+                            if update.effective_message.from_user.username == BOTMASTER:
+                                isAdmin = True
+                            if isAdmin == True:
+                                if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                    extraname = update.effective_message['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
+                                    proceed = True
+                                    try:
+                                        f = open("extras/" + str(chat_id) + ".txt", "r")
+                                        s = f.read().split('\n')
+                                        f.close()
+                                        for x in s:
+                                            mid = x.split(':')[0]
+                                            ename = x.split(':')[1]
+                                            cid = x.split(':')[2]
+                                            if ename == extraname:
+                                                proceed = False
+                                    except:
+                                        pass
+                                    if proceed == True:
+                                        f = open("extras/" + str(chat_id) + ".txt", "a+")
+                                        f.write(str(telepot.message_identifier(update.effective_message['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
+                                        f.close()
+                                        f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
+                                        f.write(extraname + "\r\n")
+                                        f.close()
+                                        bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=update.effective_message.message_id)
+                                    else:
+                                        bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=update.effective_message.message_id)
                                 else:
-                                    bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=update.effective_message.message_id)
+                                    bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!", reply_to_message_id=update.effective_message.message_id)
                             else:
                                 bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!", reply_to_message_id=update.effective_message.message_id)
-                        else:
-                            bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!", reply_to_message_id=update.effective_message.message_id)
-                except:
-                    bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=update.effective_message.message_id)
-            if update.effective_message['text'].startswith('#') or update.effective_message['text'].startswith("/extra "):
-                if isenabled("extras"):
-                    try:
-                        if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                            if update.effective_message['text'].startswith("/extra "):
-                                extraname = update.effective_message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
-                            else:
-                                extraname = update.effective_message['text'].split('#')[1].split('\n')[0]
-                            f = open("extras/" + str(chat_id) + ".txt", "r")
-                            s = f.read().split('\n')
-                            f.close()
-                            mid = None
-                            for x in s:
-                                if not x == "":
-                                    ename = x.split(':')[1]
-                                    if ename == extraname:
-                                        mid = x.split(':')[0]
-                                        cid = x.split(':')[2]
-                            try:
-                                status_message = bot.forwardMessage(chat_id, chat_id, int(mid))
-                            except:
-                                bot.sendMessage(chat_id, "Error: Extra not found!", reply_to_message_id=update.effective_message.message_id)
-                            try:
-                                if "document" in str(status_message):
-                                    fileid = status_message.document.file_id
-                                    bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "sticker" in str(status_message):
-                                    fileid = status_message.sticker.file_id
-                                    bot.sendSticker(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "voice" in str(status_message):
-                                    fileid = status_message.voice.file_id
-                                    bot.sendVoice(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "video_note" in str(status_message):
-                                    fileid = status_message.video_note.file_id
-                                    bot.sendVideoNote(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "video" in str(status_message):
-                                    fileid = status_message.video.file_id
-                                    bot.sendVideo(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "photo" in str(status_message):
-                                    fileid = status_message.photo.file_id
-                                    bot.sendPhoto(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "audio" in str(status_message):
-                                    fileid = status_message.audio.file_id
-                                    bot.sendAudio(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "file" in str(status_message):
-                                    fileid = status_message.document.file_id
-                                    bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                if "text" in str(status_message):
-                                    bot.sendMessage(chat_id, status_message['text'], reply_to_message_id=update.effective_message.message_id)
-                            except:
-                                pass
                     except:
-                        pass
-            if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled("extras"):
-                try:
-                    if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                        f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
-                        bot.sendDocument(chat_id, f, reply_to_message_id=update.effective_message.message_id)
-                        f.close()
-                except:
-                    bot.sendMessage(chat_id, "Error: No extras available!", reply_to_message_id=update.effective_message.message_id)
-            if update.effective_message['text'].startswith("/extradel") and isenabled("extras"):
-                if " " in update.effective_message['text']:
-                    extraname = update.effective_message['text'].split('/extradel ')[1].replace('#', '').split('\n')[0]
-                    if chat_type == "private":
-                        f = open("extras/" + str(chat_id) + ".txt", "r")
-                        lines = f.readlines()
-                        f.close()
-                        f = open("extras/" + str(chat_id) + ".txt", "w")
-                        actuallyDidIt = False
-                        for line in lines:
-                            if not line.split(':')[1] == extraname:
-                                f.write(line)
-                        f.close()
-                        f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
-                        linesb = f.readlines()
-                        f.close()
-                        f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
+                        bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=update.effective_message.message_id)
+                if update.effective_message['text'].startswith('#') or update.effective_message['text'].startswith("/extra "):
+                    if isenabled("extras"):
                         try:
-                            for line in linesb:
-                                if not line == extraname+"\r\n":
-                                    f.write(line)
-                            f.close()
-                            actuallyDidIt = True
+                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                if update.effective_message['text'].startswith("/extra "):
+                                    extraname = update.effective_message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
+                                else:
+                                    extraname = update.effective_message['text'].split('#')[1].split('\n')[0]
+                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                s = f.read().split('\n')
+                                f.close()
+                                mid = None
+                                for x in s:
+                                    if not x == "":
+                                        ename = x.split(':')[1]
+                                        if ename == extraname:
+                                            mid = x.split(':')[0]
+                                            cid = x.split(':')[2]
+                                try:
+                                    status_message = bot.forwardMessage(chat_id, chat_id, int(mid))
+                                except:
+                                    bot.sendMessage(chat_id, "Error: Extra not found!", reply_to_message_id=update.effective_message.message_id)
+                                try:
+                                    if "document" in str(status_message):
+                                        fileid = status_message.document.file_id
+                                        bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "sticker" in str(status_message):
+                                        fileid = status_message.sticker.file_id
+                                        bot.sendSticker(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "voice" in str(status_message):
+                                        fileid = status_message.voice.file_id
+                                        bot.sendVoice(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "video_note" in str(status_message):
+                                        fileid = status_message.video_note.file_id
+                                        bot.sendVideoNote(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "video" in str(status_message):
+                                        fileid = status_message.video.file_id
+                                        bot.sendVideo(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "photo" in str(status_message):
+                                        fileid = status_message.photo.file_id
+                                        bot.sendPhoto(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "audio" in str(status_message):
+                                        fileid = status_message.audio.file_id
+                                        bot.sendAudio(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "file" in str(status_message):
+                                        fileid = status_message.document.file_id
+                                        bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                    if "text" in str(status_message):
+                                        bot.sendMessage(chat_id, status_message['text'], reply_to_message_id=update.effective_message.message_id)
+                                except:
+                                    pass
                         except:
                             pass
-                        if actuallyDidIt == True:
-                            bot.sendMessage(chat_id, "Success: Extra deleted!", reply_to_message_id=update.effective_message.message_id)
-                        else:
-                            bot.sendMessage(chat_id, "Error: Extra doesn't exist.", reply_to_message_id=update.effective_message.message_id)
-                    if not chat_type == "private":
-                        admins = bot.getChatAdministrators(chat_id)
-                        isAdmin = False
-                        for user in admins:
+                if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled("extras"):
+                    try:
+                        if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                            f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                            bot.sendDocument(chat_id, f, reply_to_message_id=update.effective_message.message_id)
+                            f.close()
+                    except:
+                        bot.sendMessage(chat_id, "Error: No extras available!", reply_to_message_id=update.effective_message.message_id)
+                if update.effective_message['text'].startswith("/extradel") and isenabled("extras"):
+                    if " " in update.effective_message['text']:
+                        extraname = update.effective_message['text'].split('/extradel ')[1].replace('#', '').split('\n')[0]
+                        if chat_type == "private":
+                            f = open("extras/" + str(chat_id) + ".txt", "r")
+                            lines = f.readlines()
+                            f.close()
+                            f = open("extras/" + str(chat_id) + ".txt", "w")
+                            actuallyDidIt = False
+                            for line in lines:
+                                if not line.split(':')[1] == extraname:
+                                    f.write(line)
+                            f.close()
+                            f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                            linesb = f.readlines()
+                            f.close()
+                            f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
                             try:
-                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
-                                    isAdmin = True
-                            except:
-                                pass
-                        if update.effective_message.from_user.username == BOTMASTER:
-                            isAdmin = True
-                        if isAdmin == True:
-                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                                f = open("extras/" + str(chat_id) + ".txt", "r")
-                                lines = f.readlines()
-                                f.close()
-                                f = open("extras/" + str(chat_id) + ".txt", "w")
-                                actuallyDidIt = False
-                                for line in lines:
-                                    if not line.split(':')[1] == extraname:
-                                        f.write(line)
-                                f.close()
-                                f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
-                                linesb = f.readlines()
-                                f.close()
-                                f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
                                 for line in linesb:
                                     if not line == extraname+"\r\n":
                                         f.write(line)
-                                    else:
-                                        actuallyDidIt = True
                                 f.close()
-                                if actuallyDidIt == True:
-                                    bot.sendMessage(chat_id, "Success: Extra deleted!", reply_to_message_id=update.effective_message.message_id)
+                                actuallyDidIt = True
+                            except:
+                                pass
+                            if actuallyDidIt == True:
+                                bot.sendMessage(chat_id, "Success: Extra deleted!", reply_to_message_id=update.effective_message.message_id)
+                            else:
+                                bot.sendMessage(chat_id, "Error: Extra doesn't exist.", reply_to_message_id=update.effective_message.message_id)
+                        if not chat_type == "private":
+                            admins = bot.getChatAdministrators(chat_id)
+                            isAdmin = False
+                            for user in admins:
+                                try:
+                                    if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                        isAdmin = True
+                                except:
+                                    pass
+                            if update.effective_message.from_user.username == BOTMASTER:
+                                isAdmin = True
+                            if isAdmin == True:
+                                if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                    f = open("extras/" + str(chat_id) + ".txt", "r")
+                                    lines = f.readlines()
+                                    f.close()
+                                    f = open("extras/" + str(chat_id) + ".txt", "w")
+                                    actuallyDidIt = False
+                                    for line in lines:
+                                        if not line.split(':')[1] == extraname:
+                                            f.write(line)
+                                    f.close()
+                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                                    linesb = f.readlines()
+                                    f.close()
+                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
+                                    for line in linesb:
+                                        if not line == extraname+"\r\n":
+                                            f.write(line)
+                                        else:
+                                            actuallyDidIt = True
+                                    f.close()
+                                    if actuallyDidIt == True:
+                                        bot.sendMessage(chat_id, "Success: Extra deleted!", reply_to_message_id=update.effective_message.message_id)
+                                    else:
+                                        bot.sendMessage(chat_id, "Error: Extra doesn't exist.", reply_to_message_id=update.effective_message.message_id)
                                 else:
-                                    bot.sendMessage(chat_id, "Error: Extra doesn't exist.", reply_to_message_id=update.effective_message.message_id)
+                                    bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!", reply_to_message_id=update.effective_message.message_id)
                             else:
                                 bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!", reply_to_message_id=update.effective_message.message_id)
-                        else:
-                            bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!", reply_to_message_id=update.effective_message.message_id)
-                else:
-                    bot.sendMessage(chat_id, "Error: Missing parameter!", reply_to_message_id=update.effective_message.message_id)
-            if not chat_type == "private" and update.effective_message["text"].startswith("/disableextras") and isenabled("extras"):
-                admins = bot.getChatAdministrators(chat_id)
-                isAdmin = False
-                for user in admins:
-                    try:
-                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
-                            isAdmin = True
-                    except:
-                        pass
-                if update.effective_message.from_user.username == BOTMASTER:
-                    isAdmin = True
-                if isAdmin == True:
-                    os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
-                    bot.sendMessage(chat_id, "Success: Extras disabled!", reply_to_message_id=update.effective_message.message_id)
-            if not chat_type == "private" and update.effective_message["text"].startswith("/enableextras") and isenabled("extras"):
-                admins = bot.getChatAdministrators(chat_id)
-                isAdmin = False
-                for user in admins:
-                    try:
-                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
-                            isAdmin = True
-                    except:
-                        pass
-                if update.effective_message.from_user.username == BOTMASTER:
-                    isAdmin = True
-                if isAdmin == True:
-                    os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
-                    bot.sendMessage(chat_id, "Extras enabled!", reply_to_message_id=update.effective_message.message_id)
-            if not chat_type == "private" and update.effective_message['text'].startswith("/disablecounters") and isenabled("counters"):
-                admins = bot.getChatAdministrators(chat_id)
-                isAdmin = False
-                for user in admins:
-                    try:
-                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
-                            isAdmin = True
-                    except:
-                        pass
-                if update.effective_message.from_user.username == BOTMASTER:
-                    isAdmin = True
-                if isAdmin == True:
-                    f = open("counters-disabled.txt", "a+")
-                    f.write(str(chat_id) + "\n")
-                    f.close()
-                    bot.sendMessage(chat_id, "Success: Counters disabled", reply_to_message_id=update.effective_message.message_id)
-            if not chat_type == "private" and update.effective_message['text'].startswith("/enablecounters") and isenabled("counters"):
-                admins = bot.getChatAdministrators(chat_id)
-                isAdmin = False
-                for user in admins:
-                    try:
-                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
-                            isAdmin = True
-                    except:
-                        pass
-                if update.effective_message.from_user.username == BOTMASTER:
-                    isAdmin = True
-                if isAdmin == True:
-                    f = open("counters-disabled.txt", "r")
-                    s = f.readlines()
-                    f.close()
-                    f = open("counters-disabled.txt", "w")
-                    for x in s:
-                        if not x == str(chat_id)+"\n":
-                            f.write(x)
-                    f.close()
-                    bot.sendMessage(chat_id, "Success: Counters enabled!", reply_to_message_id=update.effective_message.message_id)
+                    else:
+                        bot.sendMessage(chat_id, "Error: Missing parameter!", reply_to_message_id=update.effective_message.message_id)
+                if not chat_type == "private" and update.effective_message["text"].startswith("/disableextras") and isenabled("extras"):
+                    admins = bot.getChatAdministrators(chat_id)
+                    isAdmin = False
+                    for user in admins:
+                        try:
+                            if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                isAdmin = True
+                        except:
+                            pass
+                    if update.effective_message.from_user.username == BOTMASTER:
+                        isAdmin = True
+                    if isAdmin == True:
+                        os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
+                        bot.sendMessage(chat_id, "Success: Extras disabled!", reply_to_message_id=update.effective_message.message_id)
+                if not chat_type == "private" and update.effective_message["text"].startswith("/enableextras") and isenabled("extras"):
+                    admins = bot.getChatAdministrators(chat_id)
+                    isAdmin = False
+                    for user in admins:
+                        try:
+                            if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                isAdmin = True
+                        except:
+                            pass
+                    if update.effective_message.from_user.username == BOTMASTER:
+                        isAdmin = True
+                    if isAdmin == True:
+                        os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
+                        bot.sendMessage(chat_id, "Extras enabled!", reply_to_message_id=update.effective_message.message_id)
+                if not chat_type == "private" and update.effective_message['text'].startswith("/disablecounters") and isenabled("counters"):
+                    admins = bot.getChatAdministrators(chat_id)
+                    isAdmin = False
+                    for user in admins:
+                        try:
+                            if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                isAdmin = True
+                        except:
+                            pass
+                    if update.effective_message.from_user.username == BOTMASTER:
+                        isAdmin = True
+                    if isAdmin == True:
+                        f = open("counters-disabled.txt", "a+")
+                        f.write(str(chat_id) + "\n")
+                        f.close()
+                        bot.sendMessage(chat_id, "Success: Counters disabled", reply_to_message_id=update.effective_message.message_id)
+                if not chat_type == "private" and update.effective_message['text'].startswith("/enablecounters") and isenabled("counters"):
+                    admins = bot.getChatAdministrators(chat_id)
+                    isAdmin = False
+                    for user in admins:
+                        try:
+                            if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                isAdmin = True
+                        except:
+                            pass
+                    if update.effective_message.from_user.username == BOTMASTER:
+                        isAdmin = True
+                    if isAdmin == True:
+                        f = open("counters-disabled.txt", "r")
+                        s = f.readlines()
+                        f.close()
+                        f = open("counters-disabled.txt", "w")
+                        for x in s:
+                            if not x == str(chat_id)+"\n":
+                                f.write(x)
+                        f.close()
+                        bot.sendMessage(chat_id, "Success: Counters enabled!", reply_to_message_id=update.effective_message.message_id)
+            except:
+                pass
             try:
                 bot.deleteMessage(chat_id, status_message.message_id)
             except:
