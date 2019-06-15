@@ -470,7 +470,7 @@ def handle(bot):
                                 f = open("lang/" + botlang + "/toolong", "r")
                                 s = f.read()
                                 f.close()
-                                bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                                bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                                 done = True
                             else:
                                 status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
@@ -495,7 +495,7 @@ def handle(bot):
                                     f = open("lang/" + botlang + "/unavailable", "r")
                                     s = f.read()
                                     f.close()
-                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                         except Exception as e:
                             if chat_type == "private":
                                 f = open("lang/" + botlang + "/error", "r")
@@ -644,14 +644,14 @@ def handle(bot):
                                     f = open("lang/" + botlang + "/toolong", "r")
                                     s = f.read()
                                     f.close()
-                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                         except:
                             goon = False
                             done = True
                             f = open("lang/" + botlang + "/unavailable", "r")
                             s = f.read()
                             f.close()
-                            bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                            bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                         if goon == True and done == False:
                             if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in update.effective_message["text"] and "://" in update.effective_message["text"] and not input_text.startswith("#"):
                                 status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
@@ -769,7 +769,7 @@ def handle(bot):
                                     f = open("lang/" + botlang + "/unavailable", "r")
                                     s = f.read()
                                     f.close()
-                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                             if "soundcloud" in input_text:
                                 track = client.get('/resolve', url=input_text)
                                 thist = track
