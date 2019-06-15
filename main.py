@@ -486,6 +486,9 @@ def handle(bot):
                                     bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
                                 try:
                                     sendVideoNote(chat_id, "vm.mp4")
+                                    sendVideo(chat_id, "out.mp4")
+                                    if chat_type == "private":
+                                        bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                                 except:
                                     goon = False
                                     done = True
@@ -493,9 +496,6 @@ def handle(bot):
                                     s = f.read()
                                     f.close()
                                     bot.sendMessage(chat_id,s,disable_web_page_preview=True)
-                                sendVideo(chat_id, "out.mp4")
-                                if chat_type == "private":
-                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                         except Exception as e:
                             if chat_type == "private":
                                 f = open("lang/" + botlang + "/error", "r")
@@ -742,26 +742,34 @@ def handle(bot):
                                 if not chat_type == "channel" and not "group" in chat_type:
                                     bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                 subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "audio.mp3", filename], shell=False).wait()
-                                audio = MP3(filename)
-                                length = audio.info.length * 0.33
-                                l2 = (audio.info.length * 0.33) + 60
-                                if audio.info.length > l2:
-                                    subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                                else:
-                                    subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                                if not chat_type == "channel" and not "group" in chat_type:
-                                    bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                                f = open("audio.jpg")
-                                sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
-                                f.close()
-                                if os.path.exists("audio.jpg"):
-                                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
-                                else:
-                                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                                sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                                sendVoice(chat_id,"output.ogg",username)
-                                if chat_type == "private":
-                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                                try:
+                                    audio = MP3(filename)
+                                    length = audio.info.length * 0.33
+                                    l2 = (audio.info.length * 0.33) + 60
+                                    if audio.info.length > l2:
+                                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                    else:
+                                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                    if not chat_type == "channel" and not "group" in chat_type:
+                                        bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
+                                    f = open("audio.jpg")
+                                    sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
+                                    f.close()
+                                    if os.path.exists("audio.jpg"):
+                                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                    else:
+                                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                    sendAudioChan(chat_id,filename,artist,title,username,thumb)
+                                    sendVoice(chat_id,"output.ogg",username)
+                                    if chat_type == "private":
+                                        bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                                except:
+                                    goon = False
+                                    done = True
+                                    f = open("lang/" + botlang + "/unavailable", "r")
+                                    s = f.read()
+                                    f.close()
+                                    bot.sendMessage(chat_id,s,disable_web_page_preview=True)
                             if "soundcloud" in input_text:
                                 track = client.get('/resolve', url=input_text)
                                 thist = track
