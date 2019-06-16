@@ -724,7 +724,7 @@ def handle(bot):
                                 with urllib.request.urlopen(input_text) as response:
                                     r = response.read().decode()
                                 title = r.split('<title>')[1].split('</title>')[0]
-                                stitle = html.unescape(title)
+                                stitle = html.unescape(title.split(', a song by ')[0])
                                 artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0])
                                 if " (feat." in stitle:
                                     stitle = stitle.split(' (')[0]
