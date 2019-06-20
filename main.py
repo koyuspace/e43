@@ -70,7 +70,7 @@ def isenabled(chat_id, module):
     for x in MODULES.split(','):
         if x == module:
             modenabled = True
-    if chat_id in blacklist:
+    if str(chat_id) in blacklist:
         modenabled = False
     return modenabled
 
@@ -546,7 +546,7 @@ def handle(bot):
                         commands = ""
                         for mods in MODULES.split(","):
                             try:
-                                if isenabled(mods):
+                                if isenabled(chat_id, mods):
                                     f = open("lang/" + botlang + "/cmdplates/" + mods, "r")
                                     command = f.read()
                                     f.close()
