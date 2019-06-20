@@ -64,11 +64,14 @@ f.close()
 
 VERSION = "0.9.0"
 
-def isenabled(module):
+def isenabled(chat_id, module):
+    blacklist = open("blacklist.txt", "r").read()
     modenabled = False
     for x in MODULES.split(','):
         if x == module:
             modenabled = True
+    if chat_id in blacklist:
+        modenabled = False
     return modenabled
 
 def getduration(dlcmd):
@@ -195,7 +198,7 @@ def handle(bot):
                         f.close()
                 except:
                     pass
-            if update.effective_message.audio and isenabled("voice"):
+            if update.effective_message.audio and isenabled(chat_id, "voice"):
                 try:
                     fileid = update.effective_message.audio.file_id
                     print(fileid)
@@ -216,7 +219,7 @@ def handle(bot):
                     sendVoice(update.effective_message.chat_id, "output.ogg","")
                 except:
                     pass
-            if update.effective_message.video and isenabled("videonotes"):
+            if update.effective_message.video and isenabled(chat_id, "videonotes"):
                 try:
                     fileid = update.effective_message.video.file_id
                     print(fileid)
@@ -248,31 +251,31 @@ def handle(bot):
                         if proceed:
                             if update.effective_message["text"].startswith("/kick") or update.effective_message["text"].startswith("/ban"):
                                 try:
-                                    if isenabled("ban"):
+                                    if isenabled(chat_id, "ban"):
                                         userid = update.effective_message.reply_to_message.from_user.id
                                         bot.kickChatMember(chat_id, userid)
-                                    if update.effective_message["text"].startswith("/kick") and isenabled("kick"):
+                                    if update.effective_message["text"].startswith("/kick") and isenabled(chat_id, "kick"):
                                         userid = update.effective_message.reply_to_message.from_user.id
                                         bot.kickChatMember(chat_id, userid)
                                         bot.unbanChatMember(chat_id, userid)
                                 except:
                                     pass
-                            if update.effective_message["text"].startswith("/promote") and isenabled("promote"):
+                            if update.effective_message["text"].startswith("/promote") and isenabled(chat_id, "promote"):
                                 try:
-                                    if isenabled("promote"):
+                                    if isenabled(chat_id, "promote"):
                                         userid = update.effective_message.reply_to_message.from_user.id
                                         bot.promoteChatMember(chat_id, userid)
                                 except:
                                     pass
-                            if update.effective_message["text"].startswith("/pin") and isenabled("pin"):
+                            if update.effective_message["text"].startswith("/pin") and isenabled(chat_id, "pin"):
                                 try:
-                                    if isenabled("pin"):
+                                    if isenabled(chat_id, "pin"):
                                         msgid = update.effective_message.message_id
                                         bot.pinChatMessage(chat_id, msgid)
                                 except:
                                     pass
                             if update.effective_message["text"].startswith("/delete") or update.effective_message["text"].startswith("/del"):
-                                if isenabled("delete"):
+                                if isenabled(chat_id, "delete"):
                                     try:
                                         bot.deleteMessage(chat_id, update.effective_message.reply_to_message.message_id)
                                         bot.deleteMessage(chat_id, update.effective_message.message_id)
@@ -281,7 +284,7 @@ def handle(bot):
                                             bot.deleteMessage(chat_id, update.effective_message.message_id)
                                         except:
                                             pass
-                if update.effective_message["text"].startswith("/ud") and isenabled("ud"):
+                if update.effective_message["text"].startswith("/ud") and isenabled(chat_id, "ud"):
                     try:
                         if "group" in chat_type:
                             if update.effective_message.text == "/ud" or update.effective_message.text == "/ud@" + bottag:
@@ -302,7 +305,7 @@ def handle(bot):
                         bot.sendMessage(chat_id, "Definition for <b>" + callback["list"][0]["word"].capitalize() + "</b>:\n\n" + definition, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
                     except:
                         bot.sendMessage(chat_id, "Can't find definition!", reply_to_message_id=update.effective_message.message_id)
-                if update.effective_message["text"].startswith("/stats") and isenabled("stats"):
+                if update.effective_message["text"].startswith("/stats") and isenabled(chat_id, "stats"):
                     f = open("lang/" + botlang + "/stats")
                     s = f.read()
                     f.close()
@@ -324,7 +327,7 @@ def handle(bot):
                         else:
                             s = s.replace("%%channel_id%%", err_unset)
                     else:
-                        if isenabled("settag"):
+                        if isenabled(chat_id, "settag"):
                             s = s.replace("%%channel_id%%", err_nope)
                         else:
                             s = s.replace("%%channel_id%%", err_disabled)
@@ -340,7 +343,7 @@ def handle(bot):
                         else:
                             s = s.replace("%%subscribed%%", "no")
                     else:
-                        if isenabled("subscriptions"):
+                        if isenabled(chat_id, "subscriptions"):
                             s = s.replace("%%subscribed%%", err_nope)
                         else:
                             s = s.replace("%%subscribed%%", err_disabled)
@@ -348,7 +351,7 @@ def handle(bot):
                         f = open("counters-disabled.txt")
                         x = f.read()
                         f.close()
-                        if isenabled("counters"):
+                        if isenabled(chat_id, "counters"):
                             if str(chat_id) in x:
                                 s = s.replace("%%counters%%", "deactivated")
                             else:
@@ -356,12 +359,12 @@ def handle(bot):
                         else:
                             s = s.replace("%%counters%%", err_disabled)
                     else:
-                        if isenabled("counters"):
+                        if isenabled(chat_id, "counters"):
                             s = s.replace("%%counters%%", err_nope)
                         else:
                             s = s.replace("%%counters%%", err_disabled)
                     if "group" in chat_type or chat_type == "channel":
-                        if isenabled("extras"):
+                        if isenabled(chat_id, "extras"):
                             if os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                                 s = s.replace("%%extras%%", "deactivated")
                             else:
@@ -373,7 +376,7 @@ def handle(bot):
                     s = s.replace("%%chat_type%%", chat_type)
                     s = s.replace("%%modules%%", MODULES.replace(",", ", "))
                     bot.sendMessage(chat_id, s, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
-                if update.effective_message["text"].startswith("/unsub") and isenabled("subscriptions"):
+                if update.effective_message["text"].startswith("/unsub") and isenabled(chat_id, "subscriptions"):
                     if ALLOWUNSUBS == 'TRUE':
                         if chat_type == "private" or "group" in chat_type:
                             proceed = False
@@ -412,7 +415,7 @@ def handle(bot):
                                 bot.sendMessage(chat_id, "Success: Unsubscribed!", reply_to_message_id=update.effective_message.message_id)
                     else:
                         bot.sendMessage(chat_id, "My bot owner doesn't allow me to unsubscribe :(", reply_to_message_id=update.effective_message.message_id)
-                if update.effective_message["text"].startswith("/sub") and isenabled("subscriptions"):
+                if update.effective_message["text"].startswith("/sub") and isenabled(chat_id, "subscriptions"):
                     if chat_type == "private" or "group" in chat_type:
                         proceed = False
                         if "group" in chat_type:
@@ -456,12 +459,12 @@ def handle(bot):
                                 f.write(str(chat_id) + "\n")
                                 f.close()
                             bot.sendMessage(chat_id, "Success: Subscribed!", reply_to_message_id=update.effective_message.message_id)
-                if update.effective_message['text'].startswith("/boxxy") and isenabled("boxxy"):
+                if update.effective_message['text'].startswith("/boxxy") and isenabled(chat_id, "boxxy"):
                     sendVoice(chat_id, "assets/boxxy.ogg","")
-                if update.effective_message['text'].startswith("/horny") and isenabled("horny"):
+                if update.effective_message['text'].startswith("/horny") and isenabled(chat_id, "horny"):
                     sendVoice(chat_id, "assets/horny.ogg","")
                 if update.effective_message['text'].startswith("/vid http://") or update.effective_message['text'].startswith("/vid https://"):
-                    if isenabled("videos"):
+                    if isenabled(chat_id, "videos"):
                         try:
                             input_text = update.effective_message['text'].split("/vid ")[1]
                             input_text = input_text.split('&')[0]
@@ -536,7 +539,7 @@ def handle(bot):
                 except:
                     pass
                 if update.effective_message['text'].startswith("/help") or update.effective_message['text'].startswith("/commands"):
-                    if update.effective_message['text'].startswith("/commands" ) and isenabled("commands"):
+                    if update.effective_message['text'].startswith("/commands" ) and isenabled(chat_id, "commands"):
                         f = open("lang/" + botlang + "/commands", "r")
                         s = f.read()
                         f.close()
@@ -551,7 +554,7 @@ def handle(bot):
                             except:
                                 pass
                         s = s.replace("%%commands%%", commands)
-                    if update.effective_message['text'].startswith("/help") and isenabled("help"):
+                    if update.effective_message['text'].startswith("/help") and isenabled(chat_id, "help"):
                         f = open("lang/" + botlang + "/help", "r")
                         s = f.read()
                         f.close()
@@ -586,7 +589,7 @@ def handle(bot):
                                 pass
                     else:
                         bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
-                if update.effective_message['text'].startswith("/settag") and isenabled("settag"):
+                if update.effective_message['text'].startswith("/settag") and isenabled(chat_id, "settag"):
                     if chat_type == "channel":
                         if update.effective_message['text'] == "/settag":
                             f = open("tags.txt","w+")
@@ -927,7 +930,7 @@ def handle(bot):
                 f = open("counters-disabled.txt", "r")
                 s = f.read()
                 f.close()
-                if not chat_type == "channel" and not chat_type == "private" and isenabled("counters") and not str(chat_id) in s:
+                if not chat_type == "channel" and not chat_type == "private" and isenabled(chat_id, "counters") and not str(chat_id) in s:
                     if "😂" in update.effective_message['text']:
                         count = len(update.effective_message['text'].split("😂")) - 1
                         f = open("counters/joy.txt", "r")
@@ -993,12 +996,12 @@ def handle(bot):
                         f.close()
                         if sum % rnumber == 0:
                             bot.sendMessage(chat_id, "pp level is now: " + str(sum))
-                if update.effective_message['text'].startswith("/ping") and isenabled("ping"):
+                if update.effective_message['text'].startswith("/ping") and isenabled(chat_id, "ping"):
                     ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
                     bot.sendMessage(chat_id, "Pong! (" + ping + " ms)", reply_to_message_id=update.effective_message.message_id)
                 if update.effective_message['text'].startswith("/start") and chat_type == "private":
                     start()
-                if update.effective_message['text'].startswith("/addextra") and isenabled("extras"):
+                if update.effective_message['text'].startswith("/addextra") and isenabled(chat_id, "extras"):
                     try:
                         extraname = update.effective_message['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
                         if chat_type == "private":
@@ -1070,7 +1073,7 @@ def handle(bot):
                     except:
                         bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=update.effective_message.message_id)
                 if update.effective_message['text'].startswith('#') or update.effective_message['text'].startswith("/extra "):
-                    if isenabled("extras"):
+                    if isenabled(chat_id, "extras"):
                         try:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                                 if update.effective_message['text'].startswith("/extra "):
@@ -1122,7 +1125,7 @@ def handle(bot):
                                     pass
                         except:
                             pass
-                if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled("extras"):
+                if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled(chat_id, "extras"):
                     try:
                         if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                             f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
@@ -1130,7 +1133,7 @@ def handle(bot):
                             f.close()
                     except:
                         bot.sendMessage(chat_id, "Error: No extras available!", reply_to_message_id=update.effective_message.message_id)
-                if update.effective_message['text'].startswith("/extradel") and isenabled("extras"):
+                if update.effective_message['text'].startswith("/extradel") and isenabled(chat_id, "extras"):
                     if " " in update.effective_message['text']:
                         extraname = update.effective_message['text'].split('/extradel ')[1].replace('#', '').split('\n')[0]
                         if chat_type == "private":
@@ -1201,7 +1204,7 @@ def handle(bot):
                                 bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!", reply_to_message_id=update.effective_message.message_id)
                     else:
                         bot.sendMessage(chat_id, "Error: Missing parameter!", reply_to_message_id=update.effective_message.message_id)
-                if not chat_type == "private" and update.effective_message["text"].startswith("/disableextras") and isenabled("extras"):
+                if not chat_type == "private" and update.effective_message["text"].startswith("/disableextras") and isenabled(chat_id, "extras"):
                     admins = bot.getChatAdministrators(chat_id)
                     isAdmin = False
                     for user in admins:
@@ -1215,7 +1218,7 @@ def handle(bot):
                     if isAdmin == True:
                         os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
                         bot.sendMessage(chat_id, "Success: Extras disabled!", reply_to_message_id=update.effective_message.message_id)
-                if not chat_type == "private" and update.effective_message["text"].startswith("/enableextras") and isenabled("extras"):
+                if not chat_type == "private" and update.effective_message["text"].startswith("/enableextras") and isenabled(chat_id, "extras"):
                     admins = bot.getChatAdministrators(chat_id)
                     isAdmin = False
                     for user in admins:
@@ -1229,7 +1232,7 @@ def handle(bot):
                     if isAdmin == True:
                         os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
                         bot.sendMessage(chat_id, "Extras enabled!", reply_to_message_id=update.effective_message.message_id)
-                if not chat_type == "private" and update.effective_message['text'].startswith("/disablecounters") and isenabled("counters"):
+                if not chat_type == "private" and update.effective_message['text'].startswith("/disablecounters") and isenabled(chat_id, "counters"):
                     admins = bot.getChatAdministrators(chat_id)
                     isAdmin = False
                     for user in admins:
@@ -1245,7 +1248,7 @@ def handle(bot):
                         f.write(str(chat_id) + "\n")
                         f.close()
                         bot.sendMessage(chat_id, "Success: Counters disabled", reply_to_message_id=update.effective_message.message_id)
-                if not chat_type == "private" and update.effective_message['text'].startswith("/enablecounters") and isenabled("counters"):
+                if not chat_type == "private" and update.effective_message['text'].startswith("/enablecounters") and isenabled(chat_id, "counters"):
                     admins = bot.getChatAdministrators(chat_id)
                     isAdmin = False
                     for user in admins:
