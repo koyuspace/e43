@@ -72,6 +72,8 @@ def isenabled(chat_id, module):
             modenabled = True
     if str(chat_id) in blacklist:
         modenabled = False
+    if "*" in blacklist:
+        modenabled = False
     return modenabled
 
 def getduration(dlcmd):
