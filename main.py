@@ -538,57 +538,60 @@ def handle(bot):
                     os.system("rm -f thumb.jpg")
                 except:
                     pass
-                if update.effective_message['text'].startswith("/help") or update.effective_message['text'].startswith("/commands"):
-                    if update.effective_message['text'].startswith("/commands" ) and isenabled(chat_id, "commands"):
-                        f = open("lang/" + botlang + "/commands", "r")
-                        s = f.read()
-                        f.close()
-                        commands = ""
-                        for mods in MODULES.split(","):
-                            try:
-                                if isenabled(chat_id, mods):
-                                    f = open("lang/" + botlang + "/cmdplates/" + mods, "r")
-                                    command = f.read()
-                                    f.close()
-                                    commands = commands + command + "\n"
-                            except:
-                                pass
-                        s = s.replace("%%commands%%", commands)
-                    if update.effective_message['text'].startswith("/help") and isenabled(chat_id, "help"):
-                        f = open("lang/" + botlang + "/help", "r")
-                        s = f.read()
-                        f.close()
-                        release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                        s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release).replace("%%version%%", VERSION)
-                    if "group" in chat_type:
-                        f = open("chatids.txt", "r")
-                        cids = f.read()
-                        f.close()
-                        f = open("subsoff.txt", "r")
-                        cids = cids + f.read()
-                        f.close()
-                        try:
-                            if update.effective_message.from_user.username in cids:
+                try:
+                    if update.effective_message['text'].startswith("/help") or update.effective_message['text'].startswith("/commands"):
+                        if update.effective_message['text'].startswith("/commands" ) and isenabled(chat_id, "commands"):
+                            f = open("lang/" + botlang + "/commands", "r")
+                            s = f.read()
+                            f.close()
+                            commands = ""
+                            for mods in MODULES.split(","):
                                 try:
-                                    for x in cids.split("\n"):
-                                        if x.split(":")[1] == update.effective_message.from_user.username:
-                                            cid = int(x.split(":")[0])
+                                    if isenabled(chat_id, mods):
+                                        f = open("lang/" + botlang + "/cmdplates/" + mods, "r")
+                                        command = f.read()
+                                        f.close()
+                                        commands = commands + command + "\n"
                                 except:
                                     pass
-                                bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
+                            s = s.replace("%%commands%%", commands)
+                        if update.effective_message['text'].startswith("/help") and isenabled(chat_id, "help"):
+                            f = open("lang/" + botlang + "/help", "r")
+                            s = f.read()
+                            f.close()
+                            release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                            s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release).replace("%%version%%", VERSION)
+                        if "group" in chat_type:
+                            f = open("chatids.txt", "r")
+                            cids = f.read()
+                            f.close()
+                            f = open("subsoff.txt", "r")
+                            cids = cids + f.read()
+                            f.close()
+                            try:
+                                if update.effective_message.from_user.username in cids:
+                                    try:
+                                        for x in cids.split("\n"):
+                                            if x.split(":")[1] == update.effective_message.from_user.username:
+                                                cid = int(x.split(":")[0])
+                                    except:
+                                        pass
+                                    bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
+                                    try:
+                                        bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                    except:
+                                        pass
+                                else:
+                                    bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below, send me any message and try again to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
+                            except:
                                 try:
-                                    bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                    bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below and start me to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
                                 except:
                                     pass
-                            else:
-                                bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below, send me any message and try again to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
-                        except:
-                            try:
-                                bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below and start me to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
-                            except:
-                                pass
-                    else:
-                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
+                        else:
+                            bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
+                except:
+                    pass
                 if update.effective_message['text'].startswith("/settag") and isenabled(chat_id, "settag"):
                     if chat_type == "channel":
                         if update.effective_message['text'] == "/settag":
