@@ -21,6 +21,7 @@ import requests
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 from telegram.error import NetworkError, Unauthorized
+from pprint import pprint
 
 update_id = None
 
@@ -733,16 +734,17 @@ def handle(bot):
                                     print(trackid)
                                     with urllib.request.urlopen(input_text) as response:
                                         r = response.read().decode()
-                                    title = r.split('<title>')[1].split('</title>')[0]
-                                    stitle = html.unescape(title.split(', a song by ')[0])
-                                    artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0])
+                                    data = json.loads(r.split('Spotify.Entity = ')[1].split(';')[0].replace("\/", "/"))
+                                    pprint(data)
+                                    title  = data["name"]
+                                    stitle = title
+                                    artist = data["album"]["artists"][0]["name"]
                                     if " (feat." in stitle:
                                         stitle = stitle.split(' (')[0]
                                     title = stitle
-                                    data = r.split('Spotify.Entity = ')[1].split(';')[0]
-                                    cover = data.split('"url":"')[1].split("\"")[0].replace("\\", "")
-                                    year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
-                                    albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
+                                    cover = data["album"]["images"][0]["url"]
+                                    year = data["album"]["release_date"].split("-")[0]
+                                    albumtitle = data["album"]["name"]
                                     os.system("wget -O audio.jpg \"" + cover + "\"")
                                     query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+") + "+official+audio"
                                     print(query)
