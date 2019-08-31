@@ -746,7 +746,7 @@ def handle(bot):
                                     year = data["album"]["release_date"].split("-")[0]
                                     albumtitle = data["album"]["name"]
                                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                                    query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+") + "+official+audio"
+                                    query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
                                     print(query)
                                     cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                                     subprocess.Popen(cmd, shell=False).wait()
