@@ -1,11 +1,10 @@
 This is %%bottag%% %%version%%
 Release: %%release%%
-A bot created by @Sommerlichter
+A bot created by @bubblineyuri
 Maintained by %%botmaster%%
-Source code is on https://git.koyu.space/koyu/everythingbot
 Current engines: YayDown4E, VoiceBot4E, Video4E, SoundCLI4E, Spotify4E, MixCloud4E
 Deprecated engines: AllToMP3
 Supported websites: YouTube, SoundCloud, Spotify, MixCloud
 Supported files: M4A, MP3, MP4
 
-© koyu, Pifge, openglfreak and ponies 2018-2019
+© koyu.space 2019
