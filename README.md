@@ -1,3 +1,5 @@
+**Note: This project is now community-maintained and won't receive any features or fixes from koyu.space**
+
 # Everything downloader Bot
 
 This Telegram bot can download almost anything :)
