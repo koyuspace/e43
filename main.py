@@ -474,7 +474,7 @@ def handle(bot):
                                 input_text = update.effective_message['text'].split("/vid ")[1]
                                 input_text = input_text.split('&')[0]
                                 duration = getduration(input_text)
-                                if duration>1000:
+                                if duration>2400:
                                     f = open("lang/" + botlang + "/toolong", "r")
                                     s = f.read()
                                     f.close()
