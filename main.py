@@ -63,7 +63,7 @@ f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
 
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 
 def isenabled(chat_id, module):
     blacklist = open("blacklist.txt", "r").read()
@@ -498,6 +498,8 @@ def handle(bot):
                                             sendVideo(chat_id, "out.mp4")
                                             if chat_type == "private":
                                                 bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                                            done = True
+                                            goon = False
                                         except:
                                             goon = False
                                             done = True
@@ -731,7 +733,7 @@ def handle(bot):
                                         print(trackid)
                                         with urllib.request.urlopen(input_text) as response:
                                             r = response.read().decode()
-                                        data = json.loads(r.split('Spotify.Entity = ')[1].split(';')[0].replace("\/", "/"))
+                                        data = json.loads(r.split('Spotify.Entity = ')[1].split(';')[0].replace("\/", "/")) # pylint: disable=anomalous-backslash-in-string
                                         pprint(data)
                                         title  = data["name"]
                                         stitle = title
@@ -871,7 +873,7 @@ def handle(bot):
                                         except:
                                             pass
                                         try:
-                                            subprocess.Popen(["sacad", artist, title, "500", "audio.jpg"], shell=False).wait()
+                                            subprocess.Popen(["sacad", "\""+artist+"\"", "\""+title+"\"", "500", "audio.jpg"], shell=False).wait()
                                         except:
                                             pass
                                         if not chat_type == "channel" and not "group" in chat_type:
@@ -887,9 +889,7 @@ def handle(bot):
                                             subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                                        f = open("audio.jpg")
                                         sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                                        f.close()
                                         if os.path.exists("audio.jpg"):
                                             os.system("convert audio.jpg -resize 90x90 thumb.jpg")
                                         else:
