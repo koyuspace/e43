@@ -25,22 +25,7 @@ from pprint import pprint
 
 update_id = None
 
-client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
-thumb = "thumb.jpg"
-
-if 'TOKEN' in os.environ:
-    TOKEN = os.environ.get('TOKEN')
-else:
-    TOKEN = ""
-if 'BOTMASTER' in os.environ:
-    BOTMASTER = os.environ.get('BOTMASTER')
-else:
-    BOTMASTER = 'bubblineyuri'
-f = open("random.txt", "w+")
-f.write(str(random.randint(10,30)))
-f.close()
-
-client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
+client = soundcloud.Client(client_id='Iy5e1Ri4GTNgrafaXe4mLpmJLXbXEfBR')
 thumb = "thumb.jpg"
 
 if 'TOKEN' in os.environ:
@@ -63,7 +48,7 @@ f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
 
-VERSION = "0.9.2"
+VERSION = "0.9.3"
 
 def isenabled(chat_id, module):
     blacklist = open("blacklist.txt", "r").read()
