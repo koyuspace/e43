@@ -1049,7 +1049,7 @@ def handle(bot):
                                                 pass
                                             if proceed == True:
                                                 f = open("extras/" + str(chat_id) + ".txt", "a+")
-                                                f.write(str(telepot.message_identifier(update.effective_message['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
+                                                f.write(str(update.effective_message['reply_to_message']['message_id']) + ":" + extraname + ":" + str(chat_id) + "\n")
                                                 f.close()
                                                 f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
                                                 f.write(extraname + "\r\n")
