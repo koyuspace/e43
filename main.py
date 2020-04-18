@@ -26,7 +26,6 @@ from pprint import pprint
 update_id = None
 
 client = soundcloud.Client(client_id='Iy5e1Ri4GTNgrafaXe4mLpmJLXbXEfBR')
-thumb = "thumb.jpg"
 
 if 'TOKEN' in os.environ:
     TOKEN = os.environ.get('TOKEN')
@@ -44,11 +43,11 @@ if 'MODULES' in os.environ:
     MODULES = os.environ.get('MODULES')
 else:
     MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,ud,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
-f = open("random.txt", "w+")
+f = open("db/random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
 
-VERSION = "0.9.3"
+VERSION = "0.9.4"
 
 def isenabled(chat_id, module):
     blacklist = open("blacklist.txt", "r").read()
@@ -95,7 +94,7 @@ def handle(bot):
                     botlang = "c"
                 done = False
                 bottag = bot.getMe()["username"]
-                f = open("random.txt", "r")
+                f = open("db/random.txt", "r")
                 rnumber = int(f.read())
                 f.close()
                 chat_type = update.effective_message.chat.type
@@ -127,23 +126,23 @@ def handle(bot):
                             fileid = bot.getUserProfilePhotos(bot.getMe().id).photos[0][0].file_id
                             bot.sendPhoto(chat_id,fileid,s)
                         except:
-                            os.system("convert e43.png -resize 512x512 thumb.jpg")
-                            bot.sendPhoto(chat_id,open("thumb.jpg", "rb"),s)
-                            os.system("rm -f thumb.jpg")
+                            os.system("convert e43.png -resize 512x512 temp/thumb.jpg")
+                            bot.sendPhoto(chat_id,open("temp/thumb.jpg", "rb"),s)
+                            os.system("rm -f temp/thumb.jpg")
                     if not isAdmin and "group" in chat_type:
-                        if os.path.exists("deadlines/" + str(chat_id) + "-admin.txt"):
-                            f = open("deadlines/" + str(chat_id) + "-admin.txt", "r")
+                        if os.path.exists("db/deadlines/" + str(chat_id) + "-admin.txt"):
+                            f = open("db/deadlines/" + str(chat_id) + "-admin.txt", "r")
                             s = f.read()
                             f.close()
                             if int(time.time()) > int(s.split(".")[0]):
                                 bot.leaveChat(chat_id)
                                 try:
-                                    os.system("rm -f deadlines/" + str(chat_id) + "-admin.txt")
+                                    os.system("rm -f db/deadlines/" + str(chat_id) + "-admin.txt")
                                 except:
                                     pass
                         else:
                             ts3 = str(time.time() + 180)
-                            f = open("deadlines/" + str(chat_id) + "-admin.txt", "w+")
+                            f = open("db/deadlines/" + str(chat_id) + "-admin.txt", "w+")
                             f.write(ts3)
                             f.close()
                             start()
@@ -154,9 +153,9 @@ def handle(bot):
                     if chat_type == "private" or "group" in chat_type:
                         try:
                             if chat_type == "private":
-                                f = open("chatids.txt", "r")
+                                f = open("db/chatids.txt", "r")
                             else:
-                                f = open("chatids2.txt", "r")
+                                f = open("db/chatids2.txt", "r")
                             x = f.read()
                             f.close()
                             f = open("subsoff.txt", "r")
@@ -165,24 +164,24 @@ def handle(bot):
                             if not str(chat_id) in x:
                                 try:
                                     if chat_type == "private":
-                                        f = open("chatids.txt", "a+")
+                                        f = open("db/chatids.txt", "a+")
                                     else:
-                                        f = open("chatids2.txt", "a+")
+                                        f = open("db/chatids2.txt", "a+")
                                     f.write(str(chat_id) + ":" + update.effective_message.from_user.username + "\n")
                                     f.close()
                                 except:
                                     if chat_type == "private":
-                                        f = open("chatids.txt", "a+")
+                                        f = open("db/chatids.txt", "a+")
                                     else:
-                                        f = open("chatids2.txt", "a+")
+                                        f = open("db/chatids2.txt", "a+")
                                     f.write(str(chat_id) + "\n")
                                     f.close()
                             if str(chat_id) in y:
                                 lines = y.split("\n")
                                 if chat_type == "private":
-                                    f = open("chatids.txt", "w")
+                                    f = open("db/chatids.txt", "w")
                                 else:
-                                    f = open("chatids2.txt", "w")
+                                    f = open("db/chatids2.txt", "w")
                                 for line in lines:
                                     if not str(chat_id) in line:
                                         f.write(line)
@@ -204,10 +203,10 @@ def handle(bot):
                                 length = audio.info.length * 0.33
                                 l2 = (audio.info.length * 0.33) + 60
                             if audio.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 temp/output.ogg")
                             else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
-                            sendVoice(update.effective_message.chat_id, "output.ogg","")
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 temp/output.ogg")
+                            sendVoice(update.effective_message.chat_id, "temp/output.ogg","")
                         except:
                             pass
                     if update.effective_message.video and isenabled(chat_id, "videonotes"):
@@ -217,8 +216,8 @@ def handle(bot):
                             print(bot.getFile(file_id=fileid))
                             filename = bot.getFile(file_id=fileid)['file_path']
                             os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
-                            os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-                            sendVideoNote(chat_id, "vm.mp4")
+                            os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 temp/vm.mp4")
+                            sendVideoNote(chat_id, "temp/vm.mp4")
                         except:
                             pass
                     if update.effective_message.text:
@@ -305,7 +304,7 @@ def handle(bot):
                             err_unset = "not set"
                             s = s.replace("%%chat_id%%", str(chat_id))
                             if chat_type == "channel":
-                                f = open("tags.txt","r")
+                                f = open("db/tags.txt","r")
                                 t = f.read().split("\n")
                                 f.close()
                                 username = ""
@@ -323,10 +322,10 @@ def handle(bot):
                                 else:
                                     s = s.replace("%%channel_id%%", err_disabled)
                             if chat_type == "private" or "group" in chat_type:
-                                f = open("chatids.txt", "r")
+                                f = open("db/chatids.txt", "r")
                                 cids = f.read()
                                 f.close()
-                                f = open("chatids2.txt", "r")
+                                f = open("db/chatids2.txt", "r")
                                 cids = cids + f.read()
                                 f.close()
                                 if str(chat_id) in cids:
@@ -339,7 +338,7 @@ def handle(bot):
                                 else:
                                     s = s.replace("%%subscribed%%", err_disabled)
                             if "group" in chat_type:
-                                f = open("counters-disabled.txt")
+                                f = open("db/counters-disabled.txt")
                                 x = f.read()
                                 f.close()
                                 if isenabled(chat_id, "counters"):
@@ -356,7 +355,7 @@ def handle(bot):
                                     s = s.replace("%%counters%%", err_disabled)
                             if "group" in chat_type or chat_type == "channel":
                                 if isenabled(chat_id, "extras"):
-                                    if os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                    if os.path.isfile("db/extras" + str(chat_id) + "-deactivated.txt"):
                                         s = s.replace("%%extras%%", "deactivated")
                                     else:
                                         s = s.replace("%%extras%%", "activated")
@@ -396,9 +395,9 @@ def handle(bot):
                                         lines = f.readlines()
                                         f.close()
                                         if chat_type == "private":
-                                            f = open("chatids.txt", "w")
+                                            f = open("db/chatids.txt", "w")
                                         else:
-                                            f = open("chatids2.txt", "w")
+                                            f = open("db/chatids2.txt", "w")
                                         for line in lines:
                                             if not str(chat_id) in line:
                                                 f.write(line)
@@ -437,16 +436,16 @@ def handle(bot):
                                     f.close()
                                     try:
                                         if chat_type == "private":
-                                            f = open("chatids.txt", "a+")
+                                            f = open("db/chatids.txt", "a+")
                                         else:
-                                            f = open("chatids2.txt", "a+")
+                                            f = open("db/chatids2.txt", "a+")
                                         f.write(str(chat_id) + ":" + update.effective_message["from"]["username"] + "\n")
                                         f.close()
                                     except:
                                         if chat_type == "private":
-                                            f = open("chatids.txt", "a+")
+                                            f = open("db/chatids.txt", "a+")
                                         else:
-                                            f = open("chatids2.txt", "a+")
+                                            f = open("db/chatids2.txt", "a+")
                                         f.write(str(chat_id) + "\n")
                                         f.close()
                                     bot.sendMessage(chat_id, "Success: Subscribed!", reply_to_message_id=update.effective_message.message_id)
@@ -470,16 +469,16 @@ def handle(bot):
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                                         cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                                         subprocess.Popen(cmd_download, shell=False).wait()
-                                        cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
+                                        cmd_conv = "ffmpeg -y -i temp/video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                         subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
                                         filename = "out.mp4"
-                                        subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
+                                        subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 temp/vm.mp4").split(' '), shell=False).wait()
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
                                         try:
-                                            sendVideoNote(chat_id, "vm.mp4")
+                                            sendVideoNote(chat_id, "temp/vm.mp4")
                                             sendVideo(chat_id, "out.mp4")
                                             if chat_type == "private":
                                                 bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
@@ -516,7 +515,7 @@ def handle(bot):
                                         except:
                                             bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
                                         try:
-                                            f = open("chatids.txt")
+                                            f = open("db/chatids.txt")
                                             c = f.readlines()
                                             f.close()
                                             master = ""
@@ -527,8 +526,8 @@ def handle(bot):
                                         except:
                                             pass
                         try:
-                            os.system("rm -f audio.jpg")
-                            os.system("rm -f thumb.jpg")
+                            os.system("rm -f temp/audio.jpg")
+                            os.system("rm -f temp/thumb.jpg")
                         except:
                             pass
                         try:
@@ -555,7 +554,7 @@ def handle(bot):
                                     release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                                     s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release).replace("%%version%%", VERSION)
                                 if "group" in chat_type:
-                                    f = open("chatids.txt", "r")
+                                    f = open("db/chatids.txt", "r")
                                     cids = f.read()
                                     f.close()
                                     f = open("subsoff.txt", "r")
@@ -588,7 +587,7 @@ def handle(bot):
                         if update.effective_message['text'].startswith("/settag") and isenabled(chat_id, "settag"):
                             if chat_type == "channel":
                                 if update.effective_message['text'] == "/settag":
-                                    f = open("tags.txt","w+")
+                                    f = open("db/tags.txt","w+")
                                     s = f.read().split("\n")
                                     for line in s:
                                         if not str(chat_id) in line:
@@ -602,7 +601,7 @@ def handle(bot):
                                             input_text = update.effective_message['text'].split("/settag ")[1]
                                         except:
                                             pass
-                                    f = open("tags.txt","a")
+                                    f = open("db/tags.txt","a")
                                     f.write(str(chat_id) + ":" + input_text + "\n")
                                     f.close()
                         update.effective_messageid = None
@@ -664,7 +663,7 @@ def handle(bot):
                                         input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url") # pylint: disable=W1401
                                     except:
                                         pass
-                                    f = open("tags.txt","r")
+                                    f = open("db/tags.txt","r")
                                     s = f.read().split("\n")
                                     f.close()
                                     username = ""
@@ -684,28 +683,28 @@ def handle(bot):
                                         title = stitle
                                         filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         cover = "https://thumbnailer.mixcloud.com/unsafe/500x500/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
-                                        os.system("wget -O audio.jpg \"" + cover + "\"")
+                                        os.system("wget -O temp/audio.jpg \"" + cover + "\"")
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(update.effective_messageid, "Converting...")
-                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
                                         l2 = (audio.info.length * 0.33) + 60
                                         if audio.info.length > l2:
-                                            subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                            subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                         else:
-                                            subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                            subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(update.effective_messageid, "Sending...")
-                                        f = open("audio.jpg")
-                                        bot.sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
+                                        f = open("temp/audio.jpg")
+                                        bot.sendPhoto(chat_id,"temp/audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
                                         f.close()
-                                        if os.path.exists("audio.jpg"):
-                                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                        if os.path.exists("temp/audio.jpg"):
+                                            os.system("convert temp/audio.jpg -resize 90x90 temp/thumb.jpg")
                                         else:
-                                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                            os.system("convert blank.jpg -resize 90x90 temp/thumb.jpg")
                                         sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                                        f = open("output.ogg", "r")
+                                        f = open("temp/output.ogg", "r")
                                         bot.sendVoice(chat_id,f,username)
                                         f.close()
                                         if chat_type == "private":
@@ -729,7 +728,7 @@ def handle(bot):
                                         cover = data["album"]["images"][0]["url"]
                                         year = data["album"]["release_date"].split("-")[0]
                                         albumtitle = data["album"]["name"]
-                                        os.system("wget -O audio.jpg \"" + cover + "\"")
+                                        os.system("wget -O temp/audio.jpg \"" + cover + "\"")
                                         query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
                                         print(query)
                                         cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
@@ -737,26 +736,26 @@ def handle(bot):
                                         filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "audio.mp3", filename], shell=False).wait()
+                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "temp/audio.ogg", filename], shell=False).wait()
                                         try:
                                             audio = MP3(filename)
                                             length = audio.info.length * 0.33
                                             l2 = (audio.info.length * 0.33) + 60
                                             if audio.info.length > l2:
-                                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                             else:
-                                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                             if not chat_type == "channel" and not "group" in chat_type:
                                                 bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                                            f = open("audio.jpg")
-                                            sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
+                                            f = open("temp/audio.jpg")
+                                            sendPhoto(chat_id,"temp/audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
                                             f.close()
-                                            if os.path.exists("audio.jpg"):
-                                                os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                            if os.path.exists("temp/audio.jpg"):
+                                                os.system("convert temp/audio.jpg -resize 90x90 temp/thumb.jpg")
                                             else:
-                                                os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                                os.system("convert blank.jpg -resize 90x90 temp/thumb.jpg")
                                             sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                                            sendVoice(chat_id,"output.ogg",username)
+                                            sendVoice(chat_id,"temp/output.ogg",username)
                                             if chat_type == "private":
                                                 bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                                         except:
@@ -782,15 +781,15 @@ def handle(bot):
                                             except:
                                                 pass
                                             try:
-                                                os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                                                os.system("wget \"" + stream_url.location + "\" -O temp/audio.ogg")
+                                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O temp/audio.jpg")
                                             except:
                                                 pass
-                                            if not os.path.exists("raw_audio.jpg"):
-                                                os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                                            if not os.path.exists("temp/raw_audio.jpg"):
+                                                os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O temp/raw_audio.jpg")
                                             if not chat_type == "channel" and not "group" in chat_type:
                                                 bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                            subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                            subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/raw_audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
                                         except:
                                             artist = thist.user['username']
                                             title = thist.title
@@ -800,34 +799,34 @@ def handle(bot):
                                             except:
                                                 pass
                                             try:
-                                                os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                                                os.system("wget \"" + stream_url.location + "\" -O temp/audio.ogg")
+                                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O temp/raw_audio.jpg")
                                             except:
                                                 pass
-                                            if not os.path.exists("raw_audio.jpg"):
-                                                os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                                            if not os.path.exists("temp/raw_audio.jpg"):
+                                                os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O temp/raw_audio.jpg")
                                             if not chat_type == "channel" and not "group" in chat_type:
                                                 bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                             try:
-                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/raw_audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
                                             except:
-                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
                                         l2 = (audio.info.length * 0.33) + 60
                                         if audio.info.length > l2:
-                                            subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                            subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                         else:
-                                            subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                            subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                                        sendPhoto(chat_id,"raw_audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                                        if os.path.exists("audio.jpg"):
-                                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                        sendPhoto(chat_id,"temp/raw_audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
+                                        if os.path.exists("temp/audio.jpg"):
+                                            os.system("convert temp/audio.jpg -resize 90x90 temp/thumb.jpg")
                                         else:
-                                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                            os.system("convert blank.jpg -resize 90x90 temp/thumb.jpg")
                                         sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                                        f = open("output.ogg", "rb")
+                                        f = open("temp/output.ogg", "rb")
                                         bot.sendVoice(chat_id,f,"",username)
                                         f.close()
                                         if chat_type == "private":
@@ -836,7 +835,7 @@ def handle(bot):
                                         input_text = input_text.replace("music.", "")
                                         cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
                                         subprocess.Popen(cmd, shell=False).wait()
-                                        tag = eyed3.load("audio.mp3")
+                                        tag = eyed3.load("temp/audio.ogg")
                                         try:
                                             title = tag.tag.title.split(" - ")[1].replace("\"", "")
                                             artist = tag.tag.title.split(" - ")[0]
@@ -858,29 +857,29 @@ def handle(bot):
                                         except:
                                             pass
                                         try:
-                                            subprocess.Popen(["sacad", "\""+artist+"\"", "\""+title+"\"", "500", "audio.jpg"], shell=False).wait()
+                                            subprocess.Popen(["sacad", "\""+artist+"\"", "\""+title+"\"", "500", "temp/audio.jpg"], shell=False).wait()
                                         except:
                                             pass
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                         filename = filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
                                         l2 = (audio.info.length * 0.33) + 60
                                         if audio.info.length > l2:
-                                            subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                            subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                         else:
-                                            subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                                            subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                                        sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                                        if os.path.exists("audio.jpg"):
-                                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                                        sendPhoto(chat_id,"temp/audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
+                                        if os.path.exists("temp/audio.jpg"):
+                                            os.system("convert temp/audio.jpg -resize 90x90 temp/thumb.jpg")
                                         else:
-                                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                                            os.system("convert blank.jpg -resize 90x90 temp/thumb.jpg")
                                         sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                                        sendVoice(chat_id,"output.ogg",username)
+                                        sendVoice(chat_id,"temp/output.ogg",username)
                                         f.close()
                                         if chat_type == "private":
                                             bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
@@ -907,7 +906,7 @@ def handle(bot):
                                     except:
                                         bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
                                     try:
-                                        f = open("chatids.txt")
+                                        f = open("db/chatids.txt")
                                         c = f.readlines()
                                         f.close()
                                         master = ""
@@ -918,71 +917,71 @@ def handle(bot):
                                     except:
                                         pass
                     try:
-                        f = open("counters-disabled.txt", "r")
+                        f = open("db/counters-disabled.txt", "r")
                         s = f.read()
                         f.close()
                         if not chat_type == "channel" and not chat_type == "private" and isenabled(chat_id, "counters") and not str(chat_id) in s:
                             if "😂" in update.effective_message['text']:
                                 count = len(update.effective_message['text'].split("😂")) - 1
-                                f = open("counters/joy.txt", "r")
+                                f = open("db/counters/joy.txt", "r")
                                 s = f.read()
                                 f.close()
                                 if s == "":
                                     s = "0"
                                 sum = int(count) + int(s)
-                                f = open("counters/joy.txt", "w")
+                                f = open("db/counters/joy.txt", "w")
                                 f.write(str(sum))
                                 f.close()
                                 if sum % rnumber == 0:
                                     bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
                             if "bro" in update.effective_message['text']:
                                 count = len(update.effective_message['text'].split("bro")) - 1
-                                f = open("counters/bro.txt", "r")
+                                f = open("db/counters/bro.txt", "r")
                                 s = f.read()
                                 f.close()
                                 if s == "":
                                     s = "0"
                                 sum = int(count) + int(s)
-                                f = open("counters/bro.txt", "w")
+                                f = open("db/counters/bro.txt", "w")
                                 f.write(str(sum))
                                 f.close()
                                 if sum % rnumber == 0:
                                     bot.sendMessage(chat_id, "bro level is now: " + str(sum))
                             if "Hi" in update.effective_message['text']:
                                 count = len(update.effective_message['text'].split("Hi")) - 1
-                                f = open("counters/hi.txt", "r")
+                                f = open("db/counters/hi.txt", "r")
                                 s = f.read()
                                 f.close()
                                 if s == "":
                                     s = "0"
                                 sum = int(count) + int(s)
-                                f = open("counters/hi.txt", "w")
+                                f = open("db/counters/hi.txt", "w")
                                 f.write(str(sum))
                                 f.close()
                                 if sum % rnumber == 0:
                                     bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
                             if "lol" in update.effective_message['text']:
                                 count = len(update.effective_message['text'].split("lol")) - 1
-                                f = open("counters/lol.txt", "r")
+                                f = open("db/counters/lol.txt", "r")
                                 s = f.read()
                                 f.close()
                                 if s == "":
                                     s = "0"
                                 sum = int(count) + int(s)
-                                f = open("counters/lol.txt", "w")
+                                f = open("db/counters/lol.txt", "w")
                                 f.write(str(sum))
                                 f.close()
                                 if sum % rnumber == 0:
                                     bot.sendMessage(chat_id, "lol level is now: " + str(sum))
                             if "pp" in update.effective_message['text']:
                                 count = len(update.effective_message['text'].split("pp")) - 1
-                                f = open("counters/pp.txt", "r")
+                                f = open("db/counters/pp.txt", "r")
                                 s = f.read()
                                 f.close()
                                 if s == "":
                                     s = "0"
                                 sum = int(count) + int(s)
-                                f = open("counters/pp.txt", "w")
+                                f = open("db/counters/pp.txt", "w")
                                 f.write(str(sum))
                                 f.close()
                                 if sum % rnumber == 0:
@@ -998,7 +997,7 @@ def handle(bot):
                                 if chat_type == "private":
                                     proceed = True
                                     try:
-                                        f = open("extras/" + str(chat_id) + ".txt", "r")
+                                        f = open("db/extras" + str(chat_id) + ".txt", "r")
                                         s = f.read().split('\n')
                                         f.close()
                                         for x in s:
@@ -1010,11 +1009,11 @@ def handle(bot):
                                     except:
                                         pass
                                     if proceed == True:
-                                        f = open("extras/" + str(chat_id) + ".txt", "a+")
+                                        f = open("db/extras" + str(chat_id) + ".txt", "a+")
                                         print(update.effective_message["reply_to_message"].message_id)
                                         f.write(str(update.effective_message.reply_to_message.message_id) + ":" + extraname + ":" + str(chat_id) + "\n")
                                         f.close()
-                                        f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
+                                        f = open("db/extras" + str(chat_id) + "-extralist.txt", "a")
                                         f.write(extraname + "\r\n")
                                         f.close()
                                         bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=update.effective_message.message_id)
@@ -1032,11 +1031,11 @@ def handle(bot):
                                     if update.effective_message.from_user.username == BOTMASTER:
                                         isAdmin = True
                                     if isAdmin == True:
-                                        if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                        if not os.path.isfile("db/extras" + str(chat_id) + "-deactivated.txt"):
                                             extraname = update.effective_message['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
                                             proceed = True
                                             try:
-                                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                                f = open("db/extras" + str(chat_id) + ".txt", "r")
                                                 s = f.read().split('\n')
                                                 f.close()
                                                 for x in s:
@@ -1048,10 +1047,10 @@ def handle(bot):
                                             except:
                                                 pass
                                             if proceed == True:
-                                                f = open("extras/" + str(chat_id) + ".txt", "a+")
+                                                f = open("db/extras" + str(chat_id) + ".txt", "a+")
                                                 f.write(str(update.effective_message['reply_to_message']['message_id']) + ":" + extraname + ":" + str(chat_id) + "\n")
                                                 f.close()
-                                                f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
+                                                f = open("db/extras" + str(chat_id) + "-extralist.txt", "a")
                                                 f.write(extraname + "\r\n")
                                                 f.close()
                                                 bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=update.effective_message.message_id)
@@ -1066,12 +1065,12 @@ def handle(bot):
                         if update.effective_message['text'].startswith('#') or update.effective_message['text'].startswith("/extra "):
                             if isenabled(chat_id, "extras"):
                                 try:
-                                    if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                    if not os.path.isfile("db/extras" + str(chat_id) + "-deactivated.txt"):
                                         if update.effective_message['text'].startswith("/extra "):
                                             extraname = update.effective_message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
                                         else:
                                             extraname = update.effective_message['text'].split('#')[1].split('\n')[0]
-                                        f = open("extras/" + str(chat_id) + ".txt", "r")
+                                        f = open("db/extras" + str(chat_id) + ".txt", "r")
                                         s = f.read().split('\n')
                                         f.close()
                                         mid = None
@@ -1118,8 +1117,8 @@ def handle(bot):
                                     pass
                         if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled(chat_id, "extras"):
                             try:
-                                if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                                if not os.path.isfile("db/extras" + str(chat_id) + "-deactivated.txt"):
+                                    f = open("db/extras" + str(chat_id) + "-extralist.txt", "r")
                                     bot.sendDocument(chat_id, f, reply_to_message_id=update.effective_message.message_id)
                                     f.close()
                             except:
@@ -1128,19 +1127,19 @@ def handle(bot):
                             if " " in update.effective_message['text']:
                                 extraname = update.effective_message['text'].split('/extradel ')[1].replace('#', '').split('\n')[0]
                                 if chat_type == "private":
-                                    f = open("extras/" + str(chat_id) + ".txt", "r")
+                                    f = open("db/extras" + str(chat_id) + ".txt", "r")
                                     lines = f.readlines()
                                     f.close()
-                                    f = open("extras/" + str(chat_id) + ".txt", "w")
+                                    f = open("db/extras" + str(chat_id) + ".txt", "w")
                                     actuallyDidIt = False
                                     for line in lines:
                                         if not line.split(':')[1] == extraname:
                                             f.write(line)
                                     f.close()
-                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                                    f = open("db/extras" + str(chat_id) + "-extralist.txt", "r")
                                     linesb = f.readlines()
                                     f.close()
-                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
+                                    f = open("db/extras" + str(chat_id) + "-extralist.txt", "w")
                                     try:
                                         for line in linesb:
                                             if not line == extraname+"\r\n":
@@ -1165,20 +1164,20 @@ def handle(bot):
                                     if update.effective_message.from_user.username == BOTMASTER:
                                         isAdmin = True
                                     if isAdmin == True:
-                                        if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                                            f = open("extras/" + str(chat_id) + ".txt", "r")
+                                        if not os.path.isfile("db/extras" + str(chat_id) + "-deactivated.txt"):
+                                            f = open("db/extras" + str(chat_id) + ".txt", "r")
                                             lines = f.readlines()
                                             f.close()
-                                            f = open("extras/" + str(chat_id) + ".txt", "w")
+                                            f = open("db/extras" + str(chat_id) + ".txt", "w")
                                             actuallyDidIt = False
                                             for line in lines:
                                                 if not line.split(':')[1] == extraname:
                                                     f.write(line)
                                             f.close()
-                                            f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                                            f = open("db/extras" + str(chat_id) + "-extralist.txt", "r")
                                             linesb = f.readlines()
                                             f.close()
-                                            f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
+                                            f = open("db/extras" + str(chat_id) + "-extralist.txt", "w")
                                             for line in linesb:
                                                 if not line == extraname+"\r\n":
                                                     f.write(line)
@@ -1207,7 +1206,7 @@ def handle(bot):
                             if update.effective_message.from_user.username == BOTMASTER:
                                 isAdmin = True
                             if isAdmin == True:
-                                os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
+                                os.system("touch db/extras" + str(chat_id) + "-deactivated.txt")
                                 bot.sendMessage(chat_id, "Success: Extras disabled!", reply_to_message_id=update.effective_message.message_id)
                         if not chat_type == "private" and update.effective_message["text"].startswith("/enableextras") and isenabled(chat_id, "extras"):
                             admins = bot.getChatAdministrators(chat_id)
@@ -1221,7 +1220,7 @@ def handle(bot):
                             if update.effective_message.from_user.username == BOTMASTER:
                                 isAdmin = True
                             if isAdmin == True:
-                                os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
+                                os.system("rm -f db/extras" + str(chat_id) + "-deactivated.txt")
                                 bot.sendMessage(chat_id, "Extras enabled!", reply_to_message_id=update.effective_message.message_id)
                         if not chat_type == "private" and update.effective_message['text'].startswith("/disablecounters") and isenabled(chat_id, "counters"):
                             admins = bot.getChatAdministrators(chat_id)
@@ -1235,7 +1234,7 @@ def handle(bot):
                             if update.effective_message.from_user.username == BOTMASTER:
                                 isAdmin = True
                             if isAdmin == True:
-                                f = open("counters-disabled.txt", "a+")
+                                f = open("db/counters-disabled.txt", "a+")
                                 f.write(str(chat_id) + "\n")
                                 f.close()
                                 bot.sendMessage(chat_id, "Success: Counters disabled", reply_to_message_id=update.effective_message.message_id)
@@ -1251,10 +1250,10 @@ def handle(bot):
                             if update.effective_message.from_user.username == BOTMASTER:
                                 isAdmin = True
                             if isAdmin == True:
-                                f = open("counters-disabled.txt", "r")
+                                f = open("db/counters-disabled.txt", "r")
                                 s = f.readlines()
                                 f.close()
-                                f = open("counters-disabled.txt", "w")
+                                f = open("db/counters-disabled.txt", "w")
                                 for x in s:
                                     if not x == str(chat_id)+"\n":
                                         f.write(x)

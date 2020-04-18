@@ -24,14 +24,14 @@ while True:
     contents.append(line)
 
 b = "\n".join(contents)
-f = open("chatids.txt", "r")
+f = open("db/chatids.txt", "r")
 s = f.read()
 f.close()
-f = open("chatids2.txt", "r")
+f = open("db/chatids2.txt", "r")
 s = s + f.read()
 f.close()
 if not ALLOWUNSUBS == 'TRUE':
-  f = open("subsoff.txt", "r")
+  f = open("db/subsoff.txt", "r")
   s = s + f.read()
   f.close()
 s = s.split("\n")
