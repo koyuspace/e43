@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Resetting database..."
-for i in counters/*.txt
+for i in db/counters/*.txt
 do
   echo "0" > $i
 done
