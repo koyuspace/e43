@@ -24,6 +24,7 @@ from telegram.error import NetworkError, Unauthorized
 from pprint import pprint
 
 update_id = None
+thumb = "temp/thumb.jpg"
 
 client = soundcloud.Client(client_id='Iy5e1Ri4GTNgrafaXe4mLpmJLXbXEfBR')
 
