@@ -686,7 +686,7 @@ def handle(bot):
                                         os.system("wget -O temp/audio.jpg \"" + cover + "\"")
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(update.effective_messageid, "Converting...")
-                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
+                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.mp3", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
                                         l2 = (audio.info.length * 0.33) + 60
@@ -736,7 +736,7 @@ def handle(bot):
                                         filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "temp/audio.ogg", filename], shell=False).wait()
+                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "temp/audio.mp3", filename], shell=False).wait()
                                         try:
                                             audio = MP3(filename)
                                             length = audio.info.length * 0.33
@@ -781,7 +781,7 @@ def handle(bot):
                                             except:
                                                 pass
                                             try:
-                                                os.system("wget \"" + stream_url.location + "\" -O temp/audio.ogg")
+                                                os.system("wget \"" + stream_url.location + "\" -O temp/audio.mp3")
                                                 os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O temp/audio.jpg")
                                             except:
                                                 pass
@@ -789,7 +789,7 @@ def handle(bot):
                                                 os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O temp/raw_audio.jpg")
                                             if not chat_type == "channel" and not "group" in chat_type:
                                                 bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                            subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/raw_audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
+                                            subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/raw_audio.jpg", "--ta", artist, "--tt", title, "temp/audio.mp3", filename], shell=False).wait()
                                         except:
                                             artist = thist.user['username']
                                             title = thist.title
@@ -799,7 +799,7 @@ def handle(bot):
                                             except:
                                                 pass
                                             try:
-                                                os.system("wget \"" + stream_url.location + "\" -O temp/audio.ogg")
+                                                os.system("wget \"" + stream_url.location + "\" -O temp/audio.mp3")
                                                 os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O temp/raw_audio.jpg")
                                             except:
                                                 pass
@@ -808,9 +808,9 @@ def handle(bot):
                                             if not chat_type == "channel" and not "group" in chat_type:
                                                 bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                             try:
-                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/raw_audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
+                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/raw_audio.jpg", "--ta", artist, "--tt", title, "temp/audio.mp3", filename], shell=False).wait()
                                             except:
-                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
+                                                subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "temp/audio.mp3", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
                                         l2 = (audio.info.length * 0.33) + 60
@@ -835,7 +835,7 @@ def handle(bot):
                                         input_text = input_text.replace("music.", "")
                                         cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
                                         subprocess.Popen(cmd, shell=False).wait()
-                                        tag = eyed3.load("temp/audio.ogg")
+                                        tag = eyed3.load("temp/audio.mp3")
                                         try:
                                             title = tag.tag.title.split(" - ")[1].replace("\"", "")
                                             artist = tag.tag.title.split(" - ")[0]
@@ -863,7 +863,7 @@ def handle(bot):
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                         filename = filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.ogg", filename], shell=False).wait()
+                                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.mp3", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
                                         l2 = (audio.info.length * 0.33) + 60
