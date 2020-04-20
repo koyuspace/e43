@@ -681,7 +681,7 @@ def handle(bot):
                                         stitle = html.unescape(title.split(' by ')[0])
                                         artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
                                         title = stitle
-                                        filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
+                                        filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         cover = "https://thumbnailer.mixcloud.com/unsafe/500x500/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
                                         os.system("wget -O temp/audio.jpg \"" + cover + "\"")
                                         if not chat_type == "channel" and not "group" in chat_type:
@@ -733,7 +733,7 @@ def handle(bot):
                                         print(query)
                                         cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                                         subprocess.Popen(cmd, shell=False).wait()
-                                        filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
+                                        filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                         subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "temp/audio.mp3", filename], shell=False).wait()
@@ -768,7 +768,7 @@ def handle(bot):
                                     if "soundcloud" in input_text:
                                         track = client.get('/resolve', url=input_text)
                                         thist = track
-                                        filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_").replace("/", "-") + ".mp3"
+                                        filename = "temp/" + thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_").replace("/", "-") + ".mp3"
                                         stream_url = client.get(thist.stream_url, allow_redirects=False)
                                         artist = None
                                         title = None
@@ -862,7 +862,7 @@ def handle(bot):
                                             pass
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                        filename = filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
+                                        filename = filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "temp/audio.mp3", filename], shell=False).wait()
                                         audio = MP3(filename)
                                         length = audio.info.length * 0.33
