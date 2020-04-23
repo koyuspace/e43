@@ -5,7 +5,7 @@ do
   echo "0" > $i
 done
 echo "0" > db/random.txt
-rm -f db/extras/*.txt
+rm -f db/extras*
 rm -f db/deadlines/*.txt
 >db/tags.txt
 >db/chatids.txt

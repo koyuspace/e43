@@ -571,7 +571,8 @@ def handle(bot):
                                                 pass
                                             bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
                                             try:
-                                                bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                                if not update.effective_message['text'].startswith("#") or not update.effective_message['text'].startswith("/extra"):
+                                                    bot.deleteMessage(chat_id, update.effective_message.message_id)
                                             except:
                                                 pass
                                         else:
@@ -1082,38 +1083,36 @@ def handle(bot):
                                                     mid = x.split(':')[0]
                                                     cid = x.split(':')[2]
                                         try:
-                                            status_message = bot.forwardMessage(chat_id, chat_id, int(mid))
+                                            repost_content = bot.forwardMessage(chat_id, chat_id, int(mid))
                                         except:
                                             bot.sendMessage(chat_id, "Error: Extra not found!", reply_to_message_id=update.effective_message.message_id)
-                                        try:
-                                            if "document" in str(status_message):
-                                                fileid = status_message.document.file_id
-                                                bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "sticker" in str(status_message):
-                                                fileid = status_message.sticker.file_id
-                                                bot.sendSticker(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "voice" in str(status_message):
-                                                fileid = status_message.voice.file_id
-                                                bot.sendVoice(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "video_note" in str(status_message):
-                                                fileid = status_message.video_note.file_id
-                                                bot.sendVideoNote(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "video" in str(status_message):
-                                                fileid = status_message.video.file_id
-                                                bot.sendVideo(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "photo" in str(status_message):
-                                                fileid = status_message.photo.file_id
-                                                bot.sendPhoto(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "audio" in str(status_message):
-                                                fileid = status_message.audio.file_id
-                                                bot.sendAudio(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "file" in str(status_message):
-                                                fileid = status_message.document.file_id
-                                                bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                            if "text" in str(status_message):
-                                                bot.sendMessage(chat_id, status_message['text'], reply_to_message_id=update.effective_message.message_id)
-                                        except:
-                                            pass
+                                        print(str(repost_content))
+                                        if "'document'" in str(repost_content):
+                                            fileid = repost_content.document.file_id
+                                            bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'sticker'" in str(repost_content):
+                                            fileid = repost_content.sticker.file_id
+                                            bot.sendSticker(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'voice'" in str(repost_content):
+                                            fileid = repost_content.voice.file_id
+                                            bot.sendVoice(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'video_note'" in str(repost_content):
+                                            fileid = repost_content.video_note.file_id
+                                            bot.sendVideoNote(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'video'" in str(repost_content):
+                                            fileid = repost_content.video.file_id
+                                            bot.sendVideo(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'photo'" in str(repost_content):
+                                            fileid = repost_content.photo.file_id
+                                            bot.sendPhoto(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'audio'" in str(repost_content):
+                                            fileid = repost_content.audio.file_id
+                                            bot.sendAudio(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'file'" in str(repost_content):
+                                            fileid = repost_content.document.file_id
+                                            bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "'text'" in str(repost_content):
+                                            bot.sendMessage(chat_id, repost_content['text'], reply_to_message_id=update.effective_message.message_id)
                                 except:
                                     pass
                         if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled(chat_id, "extras"):

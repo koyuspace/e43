@@ -15,4 +15,5 @@ cd ..
 rm -f *.pyc
 rm -f music/file_*
 rm -f videos/file_*
+rm -f file_*
 echo "Done!"
