@@ -457,7 +457,7 @@ def handle(bot):
                         if update.effective_message['text'].startswith("/vid http://") or update.effective_message['text'].startswith("/vid https://"):
                             if isenabled(chat_id, "videos"):
                                 try:
-                                    input_text = update.effective_message['text'].split("/vid ")[1]
+                                    input_text = update.effective_message['text'].replace("/vid ", "")
                                     input_text = input_text.split('&')[0]
                                     duration = getduration(input_text)
                                     if duration>2400:
