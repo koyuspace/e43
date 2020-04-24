@@ -470,11 +470,11 @@ def handle(bot):
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                                         cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text]
                                         subprocess.Popen(cmd_download, shell=False).wait()
-                                        cmd_conv = "ffmpeg -y -i temp/video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
+                                        cmd_conv = "ffmpeg -y -i temp/video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 temp/out.mp4"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                         subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
-                                        filename = "out.mp4"
+                                        filename = "temp/out.mp4"
                                         subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 temp/vm.mp4").split(' '), shell=False).wait()
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
