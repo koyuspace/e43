@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "Cleaning up..."
+youtube-dl --rm-cache-dir
 cd temp
 rm -f -- *.mp3
 rm -f *.video

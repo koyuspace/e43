@@ -723,7 +723,7 @@ def handle(bot):
                                         pprint(data)
                                         title  = data["name"]
                                         stitle = title
-                                        artist = data["album"]["artists"][0]["name"]
+                                        artist = data["artists"][0]["name"]
                                         if " (feat." in stitle:
                                             stitle = stitle.split(' (')[0]
                                         title = stitle
