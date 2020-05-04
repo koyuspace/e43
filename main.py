@@ -159,7 +159,7 @@ def handle(bot):
                                 f = open("db/chatids2.txt", "r")
                             x = f.read()
                             f.close()
-                            f = open("subsoff.txt", "r")
+                            f = open("db/subsoff.txt", "r")
                             y = f.read()
                             f.close()
                             if not str(chat_id) in x:
@@ -389,10 +389,10 @@ def handle(bot):
                                     else:
                                         proceed = True
                                     if proceed == True:
-                                        f = open("subsoff.txt", "a")
+                                        f = open("db/subsoff.txt", "a")
                                         f.write(str(chat_id) + "\n")
                                         f.close()
-                                        f = open("subsoff.txt", "r")
+                                        f = open("db/subsoff.txt", "r")
                                         lines = f.readlines()
                                         f.close()
                                         if chat_type == "private":
@@ -427,10 +427,10 @@ def handle(bot):
                                 else:
                                     proceed = True
                                 if proceed == True:
-                                    f = open("subsoff.txt", "r")
+                                    f = open("db/subsoff.txt", "r")
                                     lines = f.readlines()
                                     f.close()
-                                    f = open("subsoff.txt", "w")
+                                    f = open("db/subsoff.txt", "w")
                                     for line in lines:
                                         if not line == str(chat_id)+"\n":
                                             f.write(line)
@@ -558,7 +558,7 @@ def handle(bot):
                                     f = open("db/chatids.txt", "r")
                                     cids = f.read()
                                     f.close()
-                                    f = open("subsoff.txt", "r")
+                                    f = open("db/subsoff.txt", "r")
                                     cids = cids + f.read()
                                     f.close()
                                     try:
