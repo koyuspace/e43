@@ -876,6 +876,7 @@ def handle(bot):
                                             cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd, shell=False).wait()
+                                                tag = eyed3.load("temp/audio.mp3")
                                                 retry = False
                                             except:
                                                 pass
