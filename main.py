@@ -45,8 +45,10 @@ if 'MODULES' in os.environ:
     MODULES = os.environ.get('MODULES')
 else:
     MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,ud,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
-if 'USETOR' in os.environ and os.environ.get("USETOR") == 'TRUE':
-    extraoptions = "--proxy socks5://$RANDOM:$RANDOM@127.0.0.1:9050/"
+if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
+    extraoptions = extraoptions+"--proxy socks5://$RANDOM:$RANDOM@127.0.0.1:9050/"
+if 'FORCE4' in os.environ and os.environ.get('FORCE4') == 'TRUE':
+    extraoptions = extraoptions+"--force-ipv4"
 
 f = open("db/random.txt", "w+")
 f.write(str(random.randint(10,30)))
