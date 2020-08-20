@@ -47,7 +47,7 @@ if 'MODULES' in os.environ:
 else:
     MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,ud,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
 if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
-    extraoptions = "socks5://%%rand1%%:%%rand2%%@127.0.0.1:9050/"
+    extraoptions = "socks5://127.0.0.1:9050"
 
 f = open("db/random.txt", "w+")
 f.write(str(random.randint(10,30)))
@@ -473,7 +473,7 @@ def handle(bot):
                                         done = True
                                     else:
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
-                                        cmd_download = ["youtube-dl", "--proxy", extraoptions.replace("%%rand1%%", str(random.randint(0,9999))).replace("%%rand2%%", str(random.randint(0,9999))), extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text]
+                                        cmd_download = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text]
                                         subprocess.Popen(cmd_download, shell=False).wait()
                                         cmd_conv = "ffmpeg -y -i temp/video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 temp/out.mp4"
                                         if not chat_type == "channel" and not "group" in chat_type:
@@ -680,7 +680,7 @@ def handle(bot):
                                             username = line.split(":")[1]
                                             username = "\n🆔 @" + username
                                     if "mixcloud" in input_text:
-                                        cmd = ["youtube-dl", "--proxy", extraoptions.replace("%%rand1%%", str(random.randint(0,9999))).replace("%%rand2%%", str(random.randint(0,9999))), extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
+                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
                                         subprocess.Popen(cmd, shell=False).wait()
                                         r = requests.get(input_text)
                                         c = r.content
@@ -738,7 +738,7 @@ def handle(bot):
                                         os.system("wget -O temp/audio.jpg \"" + cover + "\"")
                                         query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
                                         print(query)
-                                        cmd = ["youtube-dl", "--proxy", extraoptions.replace("%%rand1%%", str(random.randint(0,9999))).replace("%%rand2%%", str(random.randint(0,9999))), extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                                         subprocess.Popen(cmd, shell=False).wait()
                                         filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         if not chat_type == "channel" and not "group" in chat_type:
@@ -840,7 +840,7 @@ def handle(bot):
                                             bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                                     if "youtu" in input_text:
                                         input_text = input_text.replace("music.", "")
-                                        cmd = ["youtube-dl", "--proxy", extraoptions.replace("%%rand1%%", str(random.randint(0,9999))).replace("%%rand2%%", str(random.randint(0,9999))), extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
+                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
                                         subprocess.Popen(cmd, shell=False).wait()
                                         tag = eyed3.load("temp/audio.mp3")
                                         try:
