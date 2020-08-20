@@ -473,7 +473,7 @@ def handle(bot):
                                         done = True
                                     else:
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
-                                        cmd_download = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text]
+                                        cmd_download = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
                                         subprocess.Popen(cmd_download, shell=False).wait()
                                         cmd_conv = "ffmpeg -y -i temp/video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 temp/out.mp4"
                                         if not chat_type == "channel" and not "group" in chat_type:
@@ -680,7 +680,7 @@ def handle(bot):
                                             username = line.split(":")[1]
                                             username = "\n🆔 @" + username
                                     if "mixcloud" in input_text:
-                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
+                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                         subprocess.Popen(cmd, shell=False).wait()
                                         r = requests.get(input_text)
                                         c = r.content
@@ -840,7 +840,7 @@ def handle(bot):
                                             bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                                     if "youtu" in input_text:
                                         input_text = input_text.replace("music.", "")
-                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text]
+                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                         subprocess.Popen(cmd, shell=False).wait()
                                         tag = eyed3.load("temp/audio.mp3")
                                         try:
