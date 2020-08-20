@@ -68,7 +68,7 @@ def isenabled(chat_id, module):
     return modenabled
 
 def getduration(dlcmd):
-    dlcmd = "youtube-dl --proxy" + extraoptions + " " + extraoptions2 + "-j " + dlcmd
+    dlcmd = "youtube-dl --proxy " + extraoptions + " " + extraoptions2 + "-j " + dlcmd
     if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
         args = dlcmd.split(" ")
         args2 = ["jq", ".duration"]
