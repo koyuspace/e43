@@ -47,7 +47,7 @@ if 'MODULES' in os.environ:
 else:
     MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,ud,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
 if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
-    extraoptions = "socks5://127.0.0.1:9050"
+    extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
 
 f = open("db/random.txt", "w+")
 f.write(str(random.randint(10,30)))
@@ -68,6 +68,8 @@ def isenabled(chat_id, module):
     return modenabled
 
 def getduration(dlcmd):
+    if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
+        extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
     dlcmd = "youtube-dl --proxy " + extraoptions + " " + extraoptions2 + " -j " + dlcmd
     if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
         args = dlcmd.split(" ")
