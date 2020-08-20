@@ -68,21 +68,28 @@ def isenabled(chat_id, module):
     return modenabled
 
 def getduration(dlcmd):
-    if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
+    retry = True
+    while retry:
         extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-    dlcmd = "youtube-dl --proxy " + extraoptions + " " + extraoptions2 + " -j " + dlcmd
-    if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
-        args = dlcmd.split(" ")
-        args2 = ["jq", ".duration"]
-        process_dl = subprocess.Popen(args, stdout=subprocess.PIPE, shell=False)
-        process_jq = subprocess.Popen(args2, stdin=process_dl.stdout, stdout=subprocess.PIPE, shell=False)
-        process_dl.stdout.close()
         try:
-            return int(str(process_jq.communicate()[0]).replace("b'", "").replace("\\n'", ""))
+            if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
+                extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
+            dlcmd = "youtube-dl --proxy " + extraoptions + " " + extraoptions2 + " -j " + dlcmd
+            if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
+                args = dlcmd.split(" ")
+                args2 = ["jq", ".duration"]
+                process_dl = subprocess.Popen(args, stdout=subprocess.PIPE, shell=False)
+                process_jq = subprocess.Popen(args2, stdin=process_dl.stdout, stdout=subprocess.PIPE, shell=False)
+                process_dl.stdout.close()
+                try:
+                    return int(str(process_jq.communicate()[0]).replace("b'", "").replace("\\n'", ""))
+                except:
+                    return None
+            else:
+                return 0
+            retry = False
         except:
-            return None
-    else:
-        return 0
+            pass
 
 def handle(bot):
     blacklist = open("blacklist.txt", "r").read()
@@ -475,8 +482,15 @@ def handle(bot):
                                         done = True
                                     else:
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
-                                        cmd_download = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
-                                        subprocess.Popen(cmd_download, shell=False).wait()
+                                        retry = True
+                                        while retry:
+                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
+                                            cmd_download = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
+                                            try:
+                                                subprocess.Popen(cmd_download, shell=False).wait()
+                                                retry = False
+                                            except:
+                                                pass
                                         cmd_conv = "ffmpeg -y -i temp/video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 temp/out.mp4"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
@@ -682,8 +696,15 @@ def handle(bot):
                                             username = line.split(":")[1]
                                             username = "\n🆔 @" + username
                                     if "mixcloud" in input_text:
-                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
-                                        subprocess.Popen(cmd, shell=False).wait()
+                                        retry = True
+                                        while retry:
+                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
+                                            cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
+                                            try:
+                                                subprocess.Popen(cmd, shell=False).wait()
+                                                retry = False
+                                            except:
+                                                pass
                                         r = requests.get(input_text)
                                         c = r.content
                                         title = c.split('<title>')[1].split('</title>')[0]
@@ -740,8 +761,15 @@ def handle(bot):
                                         os.system("wget -O temp/audio.jpg \"" + cover + "\"")
                                         query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
                                         print(query)
-                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
-                                        subprocess.Popen(cmd, shell=False).wait()
+                                        retry = True
+                                        while retry:
+                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
+                                            cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                                            try:
+                                                subprocess.Popen(cmd, shell=False).wait()
+                                                retry = False
+                                            except:
+                                                pass
                                         filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                         if not chat_type == "channel" and not "group" in chat_type:
                                             bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
@@ -842,8 +870,15 @@ def handle(bot):
                                             bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                                     if "youtu" in input_text:
                                         input_text = input_text.replace("music.", "")
-                                        cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
-                                        subprocess.Popen(cmd, shell=False).wait()
+                                        retry = True
+                                        while retry:
+                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
+                                            cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
+                                            try:
+                                                subprocess.Popen(cmd, shell=False).wait()
+                                                retry = False
+                                            except:
+                                                pass
                                         tag = eyed3.load("temp/audio.mp3")
                                         try:
                                             title = tag.tag.title.split(" - ")[1].replace("\"", "")
