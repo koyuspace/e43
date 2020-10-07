@@ -17,6 +17,7 @@ import urllib.request
 import html.parser
 import logging
 import telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
@@ -544,7 +545,12 @@ def handle(bot):
                                             for x in c:
                                                 if BOTMASTER in x:
                                                     master = x.split(":")[0]
-                                            bot.sendMessage(master, s, parse_mode="HTML")
+                                            try:
+                                                keyboard = [[InlineKeyboardButton("Message user (@"+update.effective_message.from_user.username+")", url="tg://resolve?domain="+update.effective_message.from_user.username)]]
+                                                reply_markup = InlineKeyboardMarkup(keyboard)
+                                                bot.sendMessage(master, s, parse_mode="HTML", reply_markup=reply_markup)
+                                            except:
+                                                bot.sendMessage(master, s, parse_mode="HTML")
                                         except:
                                             pass
                         try:
@@ -751,7 +757,15 @@ def handle(bot):
                                         pprint(data)
                                         title  = data["name"]
                                         stitle = title
-                                        artist = data["artists"][0]["name"]
+                                        try:
+                                            artist = data["artists"][0]["name"]
+                                        except:
+                                            goon = False
+                                            done = True
+                                            f = open("lang/" + botlang + "/unavailable", "r")
+                                            s = f.read()
+                                            f.close()
+                                            bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                                         if " (feat." in stitle:
                                             stitle = stitle.split(' (')[0]
                                         title = stitle
@@ -947,6 +961,7 @@ def handle(bot):
                                     s = s.replace("%%release%%", release)
                                     s = s.replace("%%bottag%%", bottag)
                                     try:
+                                        bot.deleteMessage(chat_id, update.effective_message.message_id)
                                         bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
                                     except:
                                         bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
@@ -958,7 +973,12 @@ def handle(bot):
                                         for x in c:
                                             if BOTMASTER in x:
                                                 master = x.split(":")[0]
-                                        bot.sendMessage(master, s, parse_mode="HTML")
+                                        try:
+                                            keyboard = [[InlineKeyboardButton("Message user (@"+update.effective_message.from_user.username+")", url="tg://resolve?domain="+update.effective_message.from_user.username)]]
+                                            reply_markup = InlineKeyboardMarkup(keyboard)
+                                            bot.sendMessage(master, s, parse_mode="HTML", reply_markup=reply_markup)
+                                        except:
+                                            bot.sendMessage(master, s, parse_mode="HTML")
                                     except:
                                         pass
                     try:
