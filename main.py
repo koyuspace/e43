@@ -759,56 +759,56 @@ def handle(bot):
                                         stitle = title
                                         try:
                                             artist = data["artists"][0]["name"]
-                                        except:
-                                            goon = False
-                                            done = True
-                                            f = open("lang/" + botlang + "/unavailable", "r")
-                                            s = f.read()
-                                            f.close()
-                                            bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
-                                        if " (feat." in stitle:
-                                            stitle = stitle.split(' (')[0]
-                                        title = stitle
-                                        cover = data["album"]["images"][0]["url"]
-                                        year = data["album"]["release_date"].split("-")[0]
-                                        albumtitle = data["album"]["name"]
-                                        os.system("wget -O temp/audio.jpg \"" + cover + "\"")
-                                        query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
-                                        print(query)
-                                        retry = True
-                                        while retry:
-                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-                                            cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
-                                            try:
-                                                subprocess.Popen(cmd, shell=False).wait()
-                                                retry = False
-                                            except:
-                                                pass
-                                        filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                                        if not chat_type == "channel" and not "group" in chat_type:
-                                            bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                        subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "temp/audio.mp3", filename], shell=False).wait()
-                                        try:
-                                            audio = MP3(filename)
-                                            length = audio.info.length * 0.33
-                                            l2 = (audio.info.length * 0.33) + 60
-                                            if audio.info.length > l2:
-                                                subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
-                                            else:
-                                                subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
+                                            if " (feat." in stitle:
+                                                stitle = stitle.split(' (')[0]
+                                            title = stitle
+                                            cover = data["album"]["images"][0]["url"]
+                                            year = data["album"]["release_date"].split("-")[0]
+                                            albumtitle = data["album"]["name"]
+                                            os.system("wget -O temp/audio.jpg \"" + cover + "\"")
+                                            query = artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower().replace(" ", "+")
+                                            print(query)
+                                            retry = True
+                                            while retry:
+                                                extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
+                                                cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                                                try:
+                                                    subprocess.Popen(cmd, shell=False).wait()
+                                                    retry = False
+                                                except:
+                                                    pass
+                                            filename = "temp/" + artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                                             if not chat_type == "channel" and not "group" in chat_type:
-                                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                                            f = open("temp/audio.jpg")
-                                            sendPhoto(chat_id,"temp/audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
-                                            f.close()
-                                            if os.path.exists("temp/audio.jpg"):
-                                                os.system("convert temp/audio.jpg -resize 90x90 temp/thumb.jpg")
-                                            else:
-                                                os.system("convert blank.jpg -resize 90x90 temp/thumb.jpg")
-                                            sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                                            sendVoice(chat_id,"temp/output.ogg",username)
-                                            if chat_type == "private":
-                                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                                                bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
+                                            subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "temp/audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "temp/audio.mp3", filename], shell=False).wait()
+                                            try:
+                                                audio = MP3(filename)
+                                                length = audio.info.length * 0.33
+                                                l2 = (audio.info.length * 0.33) + 60
+                                                if audio.info.length > l2:
+                                                    subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
+                                                else:
+                                                    subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn temp/output.ogg").split(' '), shell=False).wait()
+                                                if not chat_type == "channel" and not "group" in chat_type:
+                                                    bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
+                                                f = open("temp/audio.jpg")
+                                                sendPhoto(chat_id,"temp/audio.jpg","🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
+                                                f.close()
+                                                if os.path.exists("temp/audio.jpg"):
+                                                    os.system("convert temp/audio.jpg -resize 90x90 temp/thumb.jpg")
+                                                else:
+                                                    os.system("convert blank.jpg -resize 90x90 temp/thumb.jpg")
+                                                sendAudioChan(chat_id,filename,artist,title,username,thumb)
+                                                sendVoice(chat_id,"temp/output.ogg",username)
+                                                if chat_type == "private":
+                                                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                                            except:
+                                                goon = False
+                                                done = True
+                                                f = open("lang/" + botlang + "/unavailable", "r")
+                                                s = f.read()
+                                                f.close()
+                                                bot.sendMessage(chat_id,s,disable_web_page_preview=True,reply_to_message_id=update.effective_message.message_id)
                                         except:
                                             goon = False
                                             done = True
