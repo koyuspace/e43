@@ -15,10 +15,6 @@ This Telegram bot can download almost anything :)
 - wget
 - Sacad
 
-## Installation
-
-Instructions can be found on the [Wiki](https://git.koyu.space/koyu/everythingbot/wiki).
-
 ## Command list
 
 ```
@@ -41,7 +37,5 @@ sub - Subscribe to broadcasts
 unsub - Unsubscribe from broadcasts
 boxxy - Send "My name is Boxxy"
 ```
-
-**License: DBAD Public License**
 
 blank.jpg icon by [Gregor Cresnar](https://www.flaticon.com/authors/gregor-cresnar)

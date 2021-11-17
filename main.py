@@ -26,8 +26,6 @@ from pprint import pprint
 
 update_id = None
 thumb = "temp/thumb.jpg"
-extraoptions = ""
-extraoptions2 = "--force-ipv4"
 
 client = soundcloud.Client(client_id='Iy5e1Ri4GTNgrafaXe4mLpmJLXbXEfBR')
 
@@ -47,8 +45,6 @@ if 'MODULES' in os.environ:
     MODULES = os.environ.get('MODULES')
 else:
     MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,ud,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
-if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
-    extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
 
 f = open("db/random.txt", "w+")
 f.write(str(random.randint(10,30)))
@@ -71,11 +67,7 @@ def isenabled(chat_id, module):
 def getduration(dlcmd):
     retry = True
     while retry:
-        extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
         try:
-            if 'USETOR' in os.environ and os.environ.get('USETOR') == 'TRUE':
-                extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-            dlcmd = "youtube-dl --proxy " + extraoptions + " " + extraoptions2 + " -j " + dlcmd
             if "youtube.com" in dlcmd or "youtu.be" in dlcmd:
                 args = dlcmd.split(" ")
                 args2 = ["jq", ".duration"]
@@ -485,8 +477,7 @@ def handle(bot):
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                                         retry = True
                                         while retry:
-                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-                                            cmd_download = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
+                                            cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd_download, shell=False).wait()
                                                 retry = False
@@ -704,8 +695,7 @@ def handle(bot):
                                     if "mixcloud" in input_text:
                                         retry = True
                                         while retry:
-                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-                                            cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
+                                            cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd, shell=False).wait()
                                                 retry = False
@@ -770,8 +760,7 @@ def handle(bot):
                                             print(query)
                                             retry = True
                                             while retry:
-                                                extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-                                                cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                                                cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                                                 try:
                                                     subprocess.Popen(cmd, shell=False).wait()
                                                     retry = False
@@ -886,8 +875,7 @@ def handle(bot):
                                         input_text = input_text.replace("music.", "")
                                         retry = True
                                         while retry:
-                                            extraoptions = "socks5://"+str(random.randint(0,9999))+":"+str(random.randint(0,9999))+"@127.0.0.1:9050"
-                                            cmd = ["youtube-dl", "--proxy", extraoptions, extraoptions2, "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
+                                            cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd, shell=False).wait()
                                                 tag = eyed3.load("temp/audio.mp3")
