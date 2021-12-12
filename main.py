@@ -477,7 +477,7 @@ def handle(bot):
                                         status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                                         retry = True
                                         while retry:
-                                            cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
+                                            cmd_download = ["yt-dlp", "--no-continue", "-f", "mp4", "-o", "temp/video.%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd_download, shell=False).wait()
                                                 retry = False
@@ -695,7 +695,7 @@ def handle(bot):
                                     if "mixcloud" in input_text:
                                         retry = True
                                         while retry:
-                                            cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
+                                            cmd = ["yt-dlp", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd, shell=False).wait()
                                                 retry = False
@@ -760,7 +760,7 @@ def handle(bot):
                                             print(query)
                                             retry = True
                                             while retry:
-                                                cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                                                cmd = ["yt-dlp", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                                                 try:
                                                     subprocess.Popen(cmd, shell=False).wait()
                                                     retry = False
@@ -875,7 +875,7 @@ def handle(bot):
                                         input_text = input_text.replace("music.", "")
                                         retry = True
                                         while retry:
-                                            cmd = ["youtube-dl", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
+                                            cmd = ["yt-dlp", "--add-metadata", "-x", "--no-continue", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "temp/audio.%%(ext)s", input_text, "--verbose"]
                                             try:
                                                 subprocess.Popen(cmd, shell=False).wait()
                                                 tag = eyed3.load("temp/audio.mp3")
